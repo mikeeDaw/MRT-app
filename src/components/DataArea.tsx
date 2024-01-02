@@ -23,7 +23,7 @@ const DataArea: React.FC<Props> = ({ setTabAdmin, tabAdmin }) => {
           <div
             className={
               "bg-white px-3 py-1 z-0 rounded-t-lg border-2 relative border-b-0 text-sm cursor-pointer " +
-              (tabAdmin ? "opacity-80" : "border-cyan-700")
+              (tabAdmin ? "opacity-80" : "border-[#202758]")
             }
             onClick={() => setTabAdmin(!tabAdmin)}
             id="tabUser"
@@ -41,7 +41,7 @@ const DataArea: React.FC<Props> = ({ setTabAdmin, tabAdmin }) => {
           <div
             className={
               "bg-white px-3 py-1 border-2 border-b-0 rounded-t-lg text-sm text-center cursor-pointer relative " +
-              (tabAdmin ? "border-cyan-700" : "opacity-80 ")
+              (tabAdmin ? "border-[#202758]" : "opacity-80 ")
             }
             onClick={() => setTabAdmin(!tabAdmin)}
             id="tabAdmin"

@@ -2,6 +2,7 @@ import Leaflet, { LatLngExpression, latLng } from "leaflet";
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
 import { Red } from "../icons";
+import Map from './Map'
 
 const Stations = () => {
   // x , y
@@ -55,20 +56,17 @@ const Stations = () => {
   const LineOpts = { color: "#0E137D", weight: 5 };
   return (
     <div className="w-screen h-screen absolute z-0">
-      <MapContainer
-        center={[14.59673, 121.07609]}
-        zoom={12.3}
-        zoomSnap={12.5}
-        scrollWheelZoom={false}
-        dragging={false}
-        zoomControl={false}
-        doubleClickZoom={false}
-        className="w-full h-screen"
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <Map
+            center={[14.59673, 121.07609]}
+            zoom={12.3}
+            zoomSnap={12.5}
+            scrollWheelZoom={false}
+            dragging={false}
+            zoomControl={false}
+            doubleClickZoom={false}
+            styles={"w-full h-screen"}
+        >
+
         {
           // North Ave
         }
@@ -302,7 +300,7 @@ const Stations = () => {
         />
 
         <Polygon positions={polyline} pathOptions={LineOpts} />
-      </MapContainer>
+      </Map>
     </div>
   );
 };

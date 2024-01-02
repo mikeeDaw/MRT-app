@@ -4,7 +4,18 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Home, AdminDash } from "./pages";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />
+  },
+  {
+    path: '/admin',
+    element: <AdminDash />
+  }
+])
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,7 +23,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <AdminDash />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 

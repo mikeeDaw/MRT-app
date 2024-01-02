@@ -1,12 +1,12 @@
 import React from 'react'
 import DataField from './DataField'
-import {Wallet, Pay} from '../icons'
+import {Wallet, Pay, Beep} from '../icons'
 
 const UserSide = () => {
     //style={{boxShadow: "inset 0 1px 14px -7px #43575f"}}
   return (
         <div
-        className='flex flex-col border-2 border-cyan-700 p-6 rounded-b-lg'
+        className='flex flex-col border-2 border-[#202758] p-6 rounded-b-lg'
         >
             <div className="flex my-4">
             <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-gray-300 rounded-s-lg">
@@ -31,6 +31,14 @@ const UserSide = () => {
                     <DataField title={"To"} data={"---"} icon={Wallet}/>
                 </div>
             </div>
+
+            <div className='w-full mt-5 px-2'>
+                <button className='w-full py-1.5 text-white bg-[#202758] hover:bg-[#3b4aa3]' > 
+                    <span className='me-3'> *logo*</span>
+                    <span className='tracking-wider'> Tap</span>
+                </button>
+            </div>
+
         </div>
   )
 }
