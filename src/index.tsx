@@ -14,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminDash />
+  },
+  {
+    path: '/editStation',
+    element: <></>
   }
 ])
 

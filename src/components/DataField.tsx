@@ -7,18 +7,19 @@ interface Props {
     icon : any
 }
 
-const DataField = ({...props} : Props) => {
+const DataField : React.FC<Props>= ({title, data, icon}) => {
+
   return (
     <div className='bg-slate-100 flex gap-5 justify-start items-center p-2 rounded-lg'>
         <div className='justify-start'>
-            <img src={props.icon} alt="Icon" className='w-8' />
+            <img src={icon} alt='Icon' className='w-8' />
         </div>
         <div className='flex flex-col'>
             <span className='font-bold'>
-                {props.title}
+                {title}
             </span>
             <span className='text-sm'>
-                {props.data}
+                {data}
             </span>
         </div>
 

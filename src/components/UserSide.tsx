@@ -24,19 +24,12 @@ const UserSide = () => {
             >
                 <div className='w-1/2 flex flex-col gap-2'>
                     <DataField title={"Balance"} data={"Php 0.00"} icon={Wallet}/>
-                    <DataField title={"Origin"} data={"---"} icon={Wallet}/>
+                    <DataField title={"Origin"} data={"---"} icon={Wallet} />
                 </div>
                 <div className='w-1/2 flex flex-col gap-2'>
                     <DataField title={"Fare"} data={"Php 0.00"} icon={Pay}/>
-                    <DataField title={"To"} data={"---"} icon={Wallet}/>
+                    <DataField title={"To"} data={"---"} icon={Wallet} />
                 </div>
-            </div>
-
-            <div className='w-full mt-5 px-2'>
-                <button className='w-full py-1.5 text-white bg-[#202758] hover:bg-[#3b4aa3]' > 
-                    <span className='me-3'> *logo*</span>
-                    <span className='tracking-wider'> Tap</span>
-                </button>
             </div>
 
         </div>

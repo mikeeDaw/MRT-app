@@ -1,9 +1,15 @@
 import Leaflet, { LeafletMouseEvent } from 'leaflet';
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Marker, useMapEvents, Popup } from 'react-leaflet';
 import { Red } from '../icons';
+interface Props {
+    setLongitude: Dispatch<SetStateAction<Number | undefined>>,
+    setLatitude: Dispatch<SetStateAction<Number | undefined>>,
+    setOldMarker : React.Dispatch<React.SetStateAction<Leaflet.Marker<any> | undefined>>
+    oldMarker :  Leaflet.Marker<any> | undefined
 
-const MapEvents = () => {
+}
+const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, oldMarker}) => {
 
 
     let xcoor : number = 0
@@ -18,18 +24,22 @@ const MapEvents = () => {
 
     let map = useMapEvents({
         click(e) {
-          console.log(e.latlng.lat);
-          console.log(e.latlng.lng);
+
           xcoor = e.latlng.lat
           ycoor = e.latlng.lng
+          setLongitude(ycoor);
+          setLatitude(xcoor);
 
-            if(newMark != undefined) {
-                map.removeLayer(newMark);
+            if(oldMarker != undefined) {
+                map.removeLayer(oldMarker!);
             } 
 
             newMark = Leaflet.marker([xcoor,ycoor],{
                 icon: LIcon
             }).addTo(map);
+            setOldMarker(newMark)
+
+            
         }
       });
   
