@@ -1,13 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { RArrow, Beep } from '../../icons'
 import { InputField } from '../'
 import Beepcard from './Beepcard'
 
 const Cards = () => {
+
+    const [cards, setCards] = useState<any[]>([]);
+    const [trackCreate, setTrackCreate] = useState(0);
+    const [selectedCard, setSelectedCard] = useState<any>({})
+
+    const generateHandler = async () => {
+        const response = await fetch('http://localhost:4000/beep/generate', {
+            method: 'POST',
+            headers: {
+                "Content-Type": 'application/json'
+            },
+        })
+
+        const jason = await response.json()
+        console.log(jason)
+        setTrackCreate(trackCreate+1)
+    }
+    const getAll = async () => {
+
+        const response = await fetch('http://localhost:4000/beep/fetchAll', {
+            method: 'GET',
+            headers: {
+                "Content-Type": 'application/json'
+            },
+        })
+        const jason = await response.json()
+        console.log(jason)
+        setCards(jason);
+    }
+
+    useEffect(() => {
+        getAll()
+    },[trackCreate])
+
+    const cardClick = (data:any) => {
+        setSelectedCard(data)
+    }
+
   return (
     <>
         <div className='w-full flex h-full'>
-            <div className='bg-cyan-200 w-1/4 h-full flex flex-col items-center gap-3 pt-10'>
+            <div className='bg-slate-200 w-1/4 h-full flex flex-col items-center gap-3 pt-10'>
 
                 <div className='flex flex w-5/6 relative'>
                     <div className='w-[20px] absolute bottom-2/4 translate-y-2/4 left-[10px]'>
@@ -17,28 +55,48 @@ const Cards = () => {
                     </input>
                 </div>
 
-                <button className='bg-slate-100 py-2 text-slate-500 px-4 flex border-4 border-dashed border-slate-400 rounded-xl w-10/12 relative gap-2 items-center transition-all duration-75 hover:border-solid'>
-                    <div className='text-lg leading-none'> + </div>
+                <button className='bg-slate-100 py-2 text-slate-500 px-4 flex border-4 border-dashed border-slate-400 rounded-xl w-10/12 relative gap-2 items-center transition-all duration-75 hover:border-solid' onClick={generateHandler}>
+                    <div className='text-lg leading-none w-1/6'> + </div>
                     <div> Generate Card </div>
                 </button>
 
-                <Beepcard uid={'4958385939'} selected={false} />
-                <Beepcard uid={'8294064932'} selected={false} />
-                <Beepcard uid={'3002593811'} selected={true} />
-                <Beepcard uid={'1833759224'} selected={false} />
-                <Beepcard uid={'5023304256'} selected={false} />
+                {
+                    cards.map((elem)=> <Beepcard uid={elem.uid} selected={selectedCard.uid == elem.uid} handleClick={() => {cardClick(elem)}} /> )
+                }
+
 
             </div>
 
-            <div className='w-1/2 h-full flex flex-col items-center justify-center relative'>
-                <div className='absolute top-0 bg-white p-2 rounded-full'>
+            <div className='w-1/2 h-full flex flex-col items-center justify-center relative pt-3'>
+                <div className='absolute top-[20px] bg-white rounded-full z-10'>
                     <img src={Beep} alt="Beep Icon" className='w-[80px]' />
                 </div>
 
-                content area
-                <div className='w-5/6 h-5/6 flex flex-col rounded-xl' style={{boxShadow:'0 0 15px -2px #242424'}} >
-                    <div className='h-2/4 bg-white rounded-t-xl p-4'>
-                        Card Data
+                <div className='w-5/6 h-5/6 flex flex-col rounded-xl relative' id='cardData' >
+                    <div className='h-2/4 bg-white rounded-t-xl p-4 pt-10 flex' style={{zIndex:1}}>
+                        <div className='flex flex-col w-full pt-3'>
+                            <div className='flex w-full flex-col items-center mb-5'>
+                                <span className='text-2xl'> {selectedCard.uid} </span>
+                                <span className='text-slate-400 text-sm'> UUID</span>
+                            </div>
+                            <div className='flex'>
+                                <div className='flex flex-col items-center w-1/2'>
+                                    <span> Balance:</span>
+                                    <span className='text-xl'> Php {selectedCard.balance}.00 </span>
+                                </div>
+                                <div className='flex flex-col w-1/2 items-center'>
+                                    <span> Date Created</span>
+                                    <span className='text-xl'> {new Date(selectedCard.createdAt).toLocaleString("en-US",
+                                                {
+                                                    year: "numeric",
+                                                    month: "short",
+                                                    day: "numeric",
+                                                })}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
 
                     <div className='bg-green-100 h-2/4 rounded-b-xl p-4'>
@@ -48,12 +106,14 @@ const Cards = () => {
             </div>
 
             {/* Increase Load */}
-            <div className='w-1/4 bg-orange-300 p-2'>
+            <div className='w-1/4 p-2'>
                 <div className='bg-slate-800 border-2 mt-4 border-slate-800 rounded-xl'>
                     <div className='p-3 pt-2 rounded-t-xl text-white'>
                         Add Load
                     </div>
+                    
                     <div className='bg-white rounded-b-xl p-4 pb-3 flex flex-col'>
+                        <InputField forImg={false} placeholder='' inpValue={selectedCard.uid} textIcon='UID' onlyRead={true}/>
                         <InputField forImg={false} placeholder='0.00' textIcon='PHP'/>
                         <div className='text-end'>
                             <button className='w-2/6 text-sm bg-slate-800 text-white p-1 rounded-xl mt-1'>

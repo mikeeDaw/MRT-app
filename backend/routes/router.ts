@@ -1,6 +1,7 @@
 import express, { response } from 'express';
 import { adminModel } from '../models';
 import { login, register, isAuthenticated } from "../controller/authentication";
+import { generateCard, getAllCards } from '../controller/beepCard';
 
 const router = express.Router();
 
@@ -36,5 +37,8 @@ router.patch('/:station/:id', (req, res) => {
 router.post('/authVerify/xd', isAuthenticated, (req, res) => { 
     res.status(200).json({message: 'Authenticated'})
 })
+
+router.post('/beep/generate', generateCard)
+router.get('/beep/fetchAll', getAllCards)
 
 export default router;

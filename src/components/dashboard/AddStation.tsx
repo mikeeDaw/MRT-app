@@ -1,8 +1,9 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { Map, MapEvents, InputField } from '..';
 import { Marker, Popup, Polygon, useMapEvents } from "react-leaflet";
 import Leaflet, {LatLngExpression} from 'leaflet'
 import { Label, Select } from 'flowbite-react';
+import ConnSelect from './ConnSelect';
 
 const AddStation = () => {
 
@@ -59,19 +60,32 @@ const AddStation = () => {
     const [longitude, setLongitude] = useState<Number | undefined>(undefined);
     const [oldMarker, setOldMarker] = useState<Leaflet.Marker | undefined>(undefined)
     const [newConns, setNewConns] = useState(0)
+    //const [conDropdowns, setConnDropdowns] = useState<any[]>([])
 
-    let conDropdowns = []
-    for (let i = 0; i < newConns; i++) {
-      conDropdowns.push(
-        <div className="w-full">
-          <Select required>
-            <option>Ayala</option>
-            <option>Buendia</option>
-            <option>Cubao</option>
-            <option>Taft</option>
-          </Select>
-        </div>
-      )
+    let conDropdowns : any[]  = []
+    // for (let i = 0; i < newConns; i++) {
+    //   conDropdowns.push(
+    //     <div className="w-full flex" id={`sel${i}`}>
+    //       <Select required className='w-5/6'>
+    //         <option>Ayala</option>
+    //         <option>Buendia</option>
+    //         <option>Cubao</option>
+    //         <option>Taft</option>
+    //       </Select>
+    //       <div className='w-1/6 flex justify-center items-center cursor-pointer'>
+    //         <svg fill="#f03838" height="25px" width="25px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310.29 310.29" stroke="#f03838"><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" ></g><g id="SVGRepo_iconCarrier"> <path d="M155.143,0.001C69.597,0.001,0,69.597,0,155.143c0,85.545,69.597,155.142,155.143,155.142s155.143-69.597,155.143-155.142 C310.285,69.597,240.689,0.001,155.143,0.001z M244.143,171.498c0,4.411-3.589,8-8,8h-163c-4.411,0-8-3.589-8-8v-32 c0-4.411,3.589-8,8-8h163c4.411,0,8,3.589,8,8V171.498z"></path> </g></svg>
+    //       </div>
+    //     </div>
+    //   )
+    // }
+
+    let removeCon = (id: String) => {
+      conDropdowns.filter((elem) => {return elem.props.id != id})
+    }
+
+    for(let i = 0; i < newConns; i++){
+      conDropdowns.push( (<ConnSelect key={`sel${i}`} id={"sel" + i } handleClick={() => { removeCon(`sel${i}`)}} />) )
+
     }
 
   return (
@@ -138,7 +152,6 @@ const AddStation = () => {
       A pretty ORt popup. <br /> Easily customizable.
     </Popup>
   </Marker>
-
   {
     // Shaw
   }
@@ -147,7 +160,6 @@ const AddStation = () => {
       A pretty CSS3 XXX. <br /> Easily customizable.
     </Popup>
   </Marker>
-
   {
     // Boni
   }
@@ -156,7 +168,6 @@ const AddStation = () => {
       A pretty CSS3 popup. <br /> Easily customizable.
     </Popup>
   </Marker>
-
   {
     // Guadalupe
   }
@@ -189,7 +200,6 @@ const AddStation = () => {
       A pretty CSS3 popup. <br /> Easily customizable.
     </Popup>
   </Marker>
-
   {
     // Taft
   }
@@ -223,23 +233,20 @@ const AddStation = () => {
                 <div className="flex flex-col justify-between gap-3">
               
                 <div className="w-full flex">
-                  <Select required className='w-5/6'>
+                  <Select required className='w-full'>
                     <option>Ayala</option>
                     <option>Buendia</option>
                     <option>Cubao</option>
                     <option>Taft</option>
                   </Select>
-                  <div className='w-1/6 flex justify-center items-center'>
-                    -
-                  </div>
                 </div>
 
                 {
-                  conDropdowns.map((div) => {console.log(div); return div})
+                  conDropdowns.map((div) => div)
                 }
 
                 <button className='bg-slate-100 px-3 py-1 cursor-pointer rounded-xl border-dashed border-4 border-slate-400'
-                onClick={() => {console.log('clicked');setNewConns(newConns+1)} }
+                onClick={() => {setNewConns(newConns+1)} }
                 >
                   <span className='text-sm text-slate-500'>+ Add Connection</span>
                 </button>
