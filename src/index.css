@@ -67,3 +67,8 @@ code {
   background-image: linear-gradient(360deg, #e2e8f0, transparent);
   @apply absolute bottom-0 
 }
+
+/* .arrow::after{
+  content: '';
+  @apply absolute h-[35px] bg-[#202758] w-[13px] left-3 rotate-[-45deg] top-[-13px]
+} */

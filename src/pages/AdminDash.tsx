@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Navibar, SidebarNav, AddStation, Cards } from "../components/dashboard";
 import EditStation from "../components/dashboard/EditStation";
+import SideNav from "../components/dashboard/sideNav/SideNav";
+import TopNav from "../components/dashboard/sideNav/TopNav";
 
 
 const AdminDash = () => {
@@ -23,10 +25,11 @@ const AdminDash = () => {
 
   return (
     <>
-      <div className="flex flex-col">
-        <Navibar />
-        <div className="flex flex-row">
-          <SidebarNav setTab={setTab}/>
+      <div className="flex flex-row">
+        <SideNav/>
+        {/* <Navibar /> */}
+        <div className="flex flex-col w-full">
+            <TopNav />
           <div className="ms-0 w-full h-[calc(100vh-60px)] relative" id="contentArea">
 
             {generateView()}
