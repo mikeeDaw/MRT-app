@@ -60,3 +60,10 @@ code {
   z-index: 0;
   @apply absolute top-0 left-[50%] translate-x-[-50%] bg-white p-2 w-[100px] h-[80px]
 }
+#idList::after{
+  content: '';
+  height: 70px;
+  width: 100%;
+  background-image: linear-gradient(360deg, #e2e8f0, transparent);
+  @apply absolute bottom-0 
+}

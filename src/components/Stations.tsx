@@ -267,7 +267,7 @@ const Stations = () => {
         {
           // Magallanes
         }
-        <Marker key={12} position={[14.5384028464, 121.018206594]}>
+        <Marker key={122} position={[14.5384028464, 121.018206594]}>
           <Popup>
             A pretty CSS3 popup. <br /> Easily customizable.
           </Popup>

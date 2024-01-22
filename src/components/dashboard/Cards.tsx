@@ -1,32 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import { RArrow, Beep } from '../../icons'
+import { RArrow, Beep, Thrash } from '../../icons'
 import { InputField } from '../'
 import Beepcard from './Beepcard'
+import {Middleware} from '../../middleware/Middleware'
 
 const Cards = () => {
 
+    const { getToken } = Middleware()
+
     const [cards, setCards] = useState<any[]>([]);
-    const [trackCreate, setTrackCreate] = useState(0);
+    const [trackChanges, setTrackChanges] = useState(0);
     const [selectedCard, setSelectedCard] = useState<any>({})
 
+    // Generate New Beep Card
     const generateHandler = async () => {
         const response = await fetch('http://localhost:4000/beep/generate', {
             method: 'POST',
             headers: {
-                "Content-Type": 'application/json'
+                "Content-Type": 'application/json',
+                'Authorization': getToken()
             },
         })
 
         const jason = await response.json()
-        console.log(jason)
-        setTrackCreate(trackCreate+1)
+        setTrackChanges(trackChanges+1)
     }
+
+    
+    // Get All beep cards
     const getAll = async () => {
 
         const response = await fetch('http://localhost:4000/beep/fetchAll', {
             method: 'GET',
             headers: {
-                "Content-Type": 'application/json'
+                "Content-Type": 'application/json',
+                'Authorization': getToken()
             },
         })
         const jason = await response.json()
@@ -34,9 +42,27 @@ const Cards = () => {
         setCards(jason);
     }
 
+    // Delete a card
+    const deleteCard = async (uid: string) => {
+
+        const delBody = {uid:uid}
+        const response = await fetch('http://localhost:4000/beep/fetchAll', {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": 'application/json',
+                'Authorization': getToken()
+            },
+            body: JSON.stringify(delBody)
+        })
+
+        const jason = await response.json()
+        console.log('Deleted:',jason)
+        //setTrackChanges(trackChanges+1)
+    }
+
     useEffect(() => {
         getAll()
-    },[trackCreate])
+    },[trackChanges])
 
     const cardClick = (data:any) => {
         setSelectedCard(data)
@@ -45,7 +71,7 @@ const Cards = () => {
   return (
     <>
         <div className='w-full flex h-full'>
-            <div className='bg-slate-200 w-1/4 h-full flex flex-col items-center gap-3 pt-10'>
+            <div className='bg-slate-200 w-1/4 h-full flex flex-col items-center gap-3 py-10'>
 
                 <div className='flex flex w-5/6 relative'>
                     <div className='w-[20px] absolute bottom-2/4 translate-y-2/4 left-[10px]'>
@@ -60,19 +86,24 @@ const Cards = () => {
                     <div> Generate Card </div>
                 </button>
 
-                {
-                    cards.map((elem)=> <Beepcard uid={elem.uid} selected={selectedCard.uid == elem.uid} handleClick={() => {cardClick(elem)}} /> )
-                }
+                <div className='w-full h-[320px] relative' id='idList'>
+                    <div className='overflow-y-scroll w-full scrollbar-hide flex flex-col h-[320px] items-center gap-2 '>
+                    {
+                        cards.map((elem)=> <Beepcard uid={elem.uid} key={Number(elem.uid)} selected={selectedCard.uid == elem.uid} handleClick={() => {cardClick(elem)}} /> )
+                    }
+                    </div>
+                </div>
+
 
 
             </div>
 
             <div className='w-1/2 h-full flex flex-col items-center justify-center relative pt-3'>
-                <div className='absolute top-[20px] bg-white rounded-full z-10'>
-                    <img src={Beep} alt="Beep Icon" className='w-[80px]' />
-                </div>
 
                 <div className='w-5/6 h-5/6 flex flex-col rounded-xl relative' id='cardData' >
+                    <div className='absolute top-[-35px] left-1/2 translate-x-[-50%] bg-white rounded-full z-10'>
+                        <img src={Beep} alt="Beep Icon" className='w-[80px]' />
+                    </div>
                     <div className='h-2/4 bg-white rounded-t-xl p-4 pt-10 flex' style={{zIndex:1}}>
                         <div className='flex flex-col w-full pt-3'>
                             <div className='flex w-full flex-col items-center mb-5'>
@@ -106,7 +137,9 @@ const Cards = () => {
             </div>
 
             {/* Increase Load */}
-            <div className='w-1/4 p-2'>
+            <div className='w-1/4 p-2 flex flex-col justify-between py-10'>
+
+                {/* Add Load */}
                 <div className='bg-slate-800 border-2 mt-4 border-slate-800 rounded-xl'>
                     <div className='p-3 pt-2 rounded-t-xl text-white'>
                         Add Load
@@ -124,6 +157,16 @@ const Cards = () => {
                     </div>
 
                 </div>
+
+                {/* Delete Button */}
+                <button className='flex px-3 py-2 gap-3 items-center bg-[#ff5959] w-full mt-3 rounded-full'>
+                    <div className='p-1.5 rounded-full bg-[#ff9a9a]'>
+                        <img src={Thrash} alt="Thrash Icon" className='w-6' />
+                    </div>
+                    <span className='block text-white'> Delete Card </span>
+
+                </button>
+
             </div>
         </div>
     </>

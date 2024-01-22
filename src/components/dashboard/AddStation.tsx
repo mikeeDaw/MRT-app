@@ -4,8 +4,11 @@ import { Marker, Popup, Polygon, useMapEvents } from "react-leaflet";
 import Leaflet, {LatLngExpression} from 'leaflet'
 import { Label, Select } from 'flowbite-react';
 import ConnSelect from './ConnSelect';
+import {Middleware} from '../../middleware/Middleware';
 
 const AddStation = () => {
+
+    const {getToken} = Middleware()
 
     const polyline: LatLngExpression[][] = [
         [Leaflet.latLng(14.65617, 121.028032), Leaflet.latLng(14.6428, 121.0345)],

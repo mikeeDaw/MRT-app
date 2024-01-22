@@ -1,8 +1,11 @@
 import React from "react";
 import Tabs from "./Tabs";
 import { Avatar, Dropdown, Navbar } from 'flowbite-react';
-
+import {Middleware} from "../../middleware/Middleware";
 const Navibar = () => {
+
+  const {logout} = Middleware()
+
   return (
     <Navbar className="bg-[#202758]" fluid >
       <Navbar.Brand href="#">
@@ -26,7 +29,7 @@ const Navibar = () => {
           <Dropdown.Item>Settings</Dropdown.Item>
           <Dropdown.Item>Earnings</Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item>Sign out</Dropdown.Item>
+          <Dropdown.Item onClick={() => {logout()}}>Sign out</Dropdown.Item>
         </Dropdown>
       </div>
     </Navbar>

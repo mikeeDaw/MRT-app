@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import InputField from './InputField'
 import { Navigate, useNavigate } from 'react-router';
+import {Middleware, isLogged} from '../middleware/Middleware';
+
 
 const AdminLog = () => {
 
@@ -9,6 +11,8 @@ const AdminLog = () => {
     const [usernameErr, setUsernameErr] = useState(false);
     const [passErr, setPassErr] = useState(false);
     const nav = useNavigate();
+    const {login} = Middleware()
+    const auth = isLogged()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -32,10 +36,10 @@ const AdminLog = () => {
         })
 
         const json = await response.json()
+        console.log(json)
         
         if(response.ok){
-            localStorage.setItem('MRT-SESH', json.authentication.sessionToken )
-            nav('/admin')
+            login(json.authentication.sessionToken)
 
         } else {
             if(json.ErrUser) { setUsernameErr(true) }
@@ -53,7 +57,7 @@ const AdminLog = () => {
 
     const passSVG = (
         <svg className="w-4 h-4 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.5 8V4.5a3.5 3.5 0 1 0-7 0V8M8 12v3M2 8h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/>
+            <path stroke="currentColor" d="M11.5 8V4.5a3.5 3.5 0 1 0-7 0V8M8 12v3M2 8h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/>
         </svg>
     )
   return (
@@ -69,12 +73,18 @@ const AdminLog = () => {
                 </svg>
             </div>
 
-            <InputField forImg={true} icon={emailSVG} placeholder={'Username'} name='username' setter={setUsername} inpValue={username} error={usernameErr} />
+            <InputField forImg={true} icon={emailSVG} placeholder={'Username'} name='username' setter={setUsername} inpValue={username} error={usernameErr} onlyRead={auth} />
 
-            <InputField forImg={true} icon={passSVG} placeholder={'Password'} name='passw' setter={setPass} inpValue={password} error={passErr} />
+            <InputField forImg={true} icon={passSVG} placeholder={'Password'} name='passw' setter={setPass} inpValue={password} error={passErr} onlyRead={auth} />
 
+            {
+                !auth ? (
+                    <button className='mt-5 py-2 bg-[#202758] text-white rounded-full w-2/3 border-2 border-white hover:bg-white hover:text-sky-800 hover:border-2 hover:border-sky-800' type='submit'> Log In</button>
+                ) : (
+                    <button className='mt-5 py-2 bg-[#202758] text-white rounded-full w-2/3 border-2 border-white hover:bg-white hover:text-sky-800 hover:border-2 hover:border-sky-800' type='button' onClick={()=> {nav('/admin')}} > Dashboard </button>
+                )
+            }
 
-            <button className='mt-5 py-2 bg-[#202758] text-white rounded-full w-2/3 border-2 border-white hover:bg-white hover:text-sky-800 hover:border-2 hover:border-sky-800' type='submit'> Log In</button>
         </form>
 
     </div>

@@ -1,7 +1,7 @@
 import express, { response } from 'express';
 import { adminModel } from '../models';
 import { login, register, isAuthenticated } from "../controller/authentication";
-import { generateCard, getAllCards } from '../controller/beepCard';
+import { generateCard, getAllCards, deleteCard } from '../controller/beepCard';
 
 const router = express.Router();
 
@@ -38,7 +38,8 @@ router.post('/authVerify/xd', isAuthenticated, (req, res) => {
     res.status(200).json({message: 'Authenticated'})
 })
 
-router.post('/beep/generate', generateCard)
+router.post('/beep/generate',isAuthenticated, generateCard)
 router.get('/beep/fetchAll', getAllCards)
+router.delete('/beep/deleteCard', isAuthenticated, deleteCard )
 
 export default router;

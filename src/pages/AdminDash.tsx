@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Navibar, SidebarNav, AddStation, Cards } from "../components/dashboard";
 import EditStation from "../components/dashboard/EditStation";
 
@@ -13,13 +13,13 @@ const AdminDash = () => {
     localStorage.setItem('adminPage',String(tab))
   },[tab])
 
-  console.log(tab)
   const generateView = () => {
     switch (tab) {
       case 'Card' : return <Cards/>
       case 'AddStation' : return <AddStation/>
     }
   }
+
 
   return (
     <>

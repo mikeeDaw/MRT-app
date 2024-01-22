@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Stations, DataArea } from '../components';
-
+// import authCxt from '../components/context/AuthContext';
+import {Middleware} from '../middleware/Middleware'
 
 const Home = () => {
 
     const [tabAdmin, setTabAdmin] = useState(false)
-
+    // const {auth} = useContext(authCxt)
+    const {getToken} = Middleware()
   return (
     <div className='relative'>
         <Stations />
