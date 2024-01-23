@@ -40,7 +40,7 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
             return next(); // Move to the next middleware in the chain
 
         } catch (error) {
-            return res.status(400).json('Token not valid');
+            return res.status(400).json(error);
         }
     } catch (err) {
         console.error(err);
@@ -74,8 +74,8 @@ export const login = async (req: express.Request, res: express.Response) => {
 
         
         // Session token creation
-        const maxAge = 1 * 60 * 60; // days - hours - min - seconds
-        const sessionToken = jwt.sign({ userId: user!._id }, secretKey, { expiresIn: maxAge });
+        // const maxAge = 1 * 60 * 60; // days - hours - min - seconds
+        const sessionToken = jwt.sign({ userId: user!._id }, secretKey, { expiresIn: '1hr' });
         user!.authentication!.sessionToken = sessionToken;
         
         await user!.save();

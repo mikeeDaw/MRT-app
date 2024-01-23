@@ -3,6 +3,8 @@ import { Navibar, SidebarNav, AddStation, Cards } from "../components/dashboard"
 import EditStation from "../components/dashboard/EditStation";
 import SideNav from "../components/dashboard/sideNav/SideNav";
 import TopNav from "../components/dashboard/sideNav/TopNav";
+import { Stations } from "../components";
+import Settings from "../components/dashboard/settings/Settings";
 
 
 const AdminDash = () => {
@@ -19,6 +21,8 @@ const AdminDash = () => {
     switch (tab) {
       case 'Card' : return <Cards/>
       case 'AddStation' : return <AddStation/>
+      case 'Stations' : return <Stations />
+      case 'Settings' : return <Settings />
     }
   }
 
@@ -26,7 +30,7 @@ const AdminDash = () => {
   return (
     <>
       <div className="flex flex-row">
-        <SideNav/>
+        <SideNav setTab={setTab}/>
         {/* <Navibar /> */}
         <div className="flex flex-col w-full">
             <TopNav />

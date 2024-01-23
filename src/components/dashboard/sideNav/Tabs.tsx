@@ -4,14 +4,15 @@ interface Props {
     pic: any,
     location: string,
     description: string,
-    selected? : boolean
+    selected? : boolean,
+    handleClick : () => any
 }
 
-const Tabs : React.FC<Props> = ({pic, location, selected = false, description}) => {
+const Tabs : React.FC<Props> = ({pic, location, selected = false, description, handleClick}) => {
 
     const [hovered, setHovered] = useState(false);
   return (
-    <div className={'p-2 rounded-2xl relative ' + (selected ? 'bg-[#00B38C]' : '')} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <div className={'p-2 rounded-2xl relative hover:bg-[#00B38C] iconContainer ' + (selected ? 'bg-[#00B38C]' : '')} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={handleClick}>
         <a href={location}>
             <img src={pic} alt="Add Location" className='w-6' style={(selected ? {filter: 'invert(1) brightness(20)'} : {})} />
         </a>

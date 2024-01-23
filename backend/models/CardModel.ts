@@ -13,6 +13,6 @@ export const cardModel = mongoose.model('Beep', cardSchema);
 export const getCards = () => cardModel.find().sort({'updatedAt' : 'desc'});
 export const getCardByUID = (uid: String) => cardModel.findOne({uid});
 export const createCard = (values: Record<string, any>) => new cardModel(values).save().then((card)=> card.toObject());
-export const deleteCardById = (id: String) => cardModel.findOneAndDelete({ _id : id });
-export const updateCardById = (id: String, values: Record<string, any>) => cardModel.findByIdAndUpdate(id,values); 
+export const deleteCardById = (id: String) => cardModel.findOneAndDelete({ uid : id });
+export const LoadCardById = (id: String, values: Record<string, any>) => cardModel.findOneAndUpdate({uid:id},values, {new: true}); 
 

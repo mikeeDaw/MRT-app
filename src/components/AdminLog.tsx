@@ -73,9 +73,9 @@ const AdminLog = () => {
                 </svg>
             </div>
 
-            <InputField forImg={true} icon={emailSVG} placeholder={'Username'} name='username' setter={setUsername} inpValue={username} error={usernameErr} onlyRead={auth} />
+            <InputField forImg={true} icon={emailSVG} placeholder={'Username'} name='username' setter={(e) => {setUsername(e.target.value)}} inpValue={username} error={usernameErr} onlyRead={auth} />
 
-            <InputField forImg={true} icon={passSVG} placeholder={'Password'} name='passw' setter={setPass} inpValue={password} error={passErr} onlyRead={auth} />
+            <InputField forImg={true} icon={passSVG} placeholder={'Password'} name='passw' setter={(e) => {setPass(e.target.value)}} inpValue={password} error={passErr} onlyRead={auth} />
 
             {
                 !auth ? (

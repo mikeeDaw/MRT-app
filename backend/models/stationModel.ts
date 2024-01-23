@@ -4,15 +4,16 @@ const Schema = mongoose.Schema
 
 const stationSchema = new Schema({
     name: {type: String, require: true, unique: true},
-    connected: {type: [[Number]], require: true },
-    coordinates: {type: [Number, Number], require: true},
+    code: {type: String, require: true, unique: true},
+    connected: {type: [{code: String, x: Number, y: Number}], require: true },
+    coordinates: {type: {x: Number, y: Number}, require: true},
 });
 
-const stationModel = mongoose.model('Station', stationSchema);
+const StationModel = mongoose.model('Station', stationSchema);
 
-const getStations = () => stationModel.find();
-const getStationByName = (name:String) => stationModel.findOne({name});
-const createStation = (values: Record<string,any>) => new stationModel(values).save().then((user) => user.toObject());
-const deleteStationByName = (name: String) => stationModel.findOneAndDelete({name})
+const getStations = () => StationModel.find();
+const getStationByName = (code:String) => StationModel.findOne({code});
+const createStation = (values: Record<string,any>) => new StationModel(values).save().then((user) => user.toObject());
+const deleteStationByName = (name: String) => StationModel.findOneAndDelete({name})
 
-export { stationModel,getStations,getStationByName,createStation,deleteStationByName }
+export { StationModel,getStations,getStationByName,createStation,deleteStationByName }
