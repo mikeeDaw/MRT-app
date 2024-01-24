@@ -13,7 +13,7 @@ const Cards = () => {
     const [selectedCard, setSelectedCard] = useState<any>({})
     const [select, setSelect] = useState(false)
     const [load, setLoad] = useState(0);
-    console.log(load)
+
     // const dragged = useRef();
     // Generate New Beep Card
     const generateHandler = async () => {
@@ -44,7 +44,6 @@ const Cards = () => {
             },
         })
         const jason = await response.json()
-        console.log(jason)
         setCards(jason);
     }
 
@@ -219,7 +218,7 @@ const Cards = () => {
                 </div>
 
                 {/* Delete Button */}
-                <button className='flex px-3 py-2 gap-3 items-center border-2 border-[#ff5959] bg-[#ff5959] w-9/12 mt-3 rounded-full transition-all duration-500 disabled:opacity-60 disabled:pointer-events-none' id='delBtn' onClick={()=>{deleteCard(selectedCard.uid)}} disabled={(select ? false : true)}>
+                <button className='flex px-3 py-1.5 gap-3 items-center border-2 border-[#ff5959] bg-[#ff5959] w-9/12 mt-3 rounded-full transition-all duration-500 disabled:opacity-60 disabled:pointer-events-none' id='delBtn' onClick={()=>{deleteCard(selectedCard.uid)}} disabled={(select ? false : true)}>
                     <div className='p-1.5 rounded-full bg-[#ff9a9a]' draggable
                     onDragStart={(e) => console.log(e)}>
                         <img src={Thrash} alt="Thrash Icon" className='w-6' />

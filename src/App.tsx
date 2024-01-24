@@ -10,8 +10,6 @@ import authCxt from "./components/context/AuthContext";
 
 function App() {
 
-  console.log('in app')
-
   return (
     <div>
       {/* <authCxt.Provider value={{auth: autho, setAuth: setAutho}}> */}

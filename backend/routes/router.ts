@@ -3,6 +3,7 @@ import { adminModel } from '../models';
 import { login, register, isAuthenticated } from "../controller/authentication";
 import { generateCard, getAllCards, deleteCard, updateLoad } from '../controller/beepCard';
 import { makeStation } from '../controller/trainStation';
+import { getConstant, updConstDocu } from '../controller/constants';
 
 const router = express.Router();
 
@@ -44,5 +45,9 @@ router.patch('/beep/load', isAuthenticated, updateLoad)
 
 // Station Operations
 router.post('/station/add', isAuthenticated, makeStation)
+
+// Constant Operations
+router.get('/constants/get', isAuthenticated, getConstant )
+router.patch('/constants/edit', isAuthenticated, updConstDocu)
 
 export default router;

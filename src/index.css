@@ -81,3 +81,45 @@ code {
   color: #ff5959;
   font-weight: 600;
 }
+
+#constEdit:hover{
+  transition: all 0.2s ease-in;
+  @apply bg-[#202758]
+}
+
+#constEdit:hover *{
+  transition: all 0.2s ease-in;
+  stroke: #00B38C;
+  fill : #00B38C;
+}
+
+#constConf:hover{
+  transition: all 0.2s ease-in;
+  @apply bg-white
+}
+
+#constConf:hover *{
+  transition: all 0.2s ease-in;
+  stroke: #10c78c;
+}
+
+#constCanc:hover{
+  transition: all 0.2s ease-in;
+  @apply bg-white
+}
+
+#constCanc:hover *{
+  transition: all 0.2s ease-in;
+  stroke: #e73030;
+  fill: #e73030;
+}
+.chargesInp{
+  border: 1px solid transparent;
+}
+
+.chargesInp:focus{
+  box-shadow: none;
+  border: none;
+  border-bottom: 1px solid #00B38C; 
+  color: #00B38C;
+}
