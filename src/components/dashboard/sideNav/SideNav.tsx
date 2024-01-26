@@ -27,11 +27,11 @@ const SideNav : React.FC<Props> = ({setTab}) => {
         <div className='flex flex-col justify-between items-center h-full w-full'>
           <div className='flex flex-col gap-3 mt-3'>
             <Tabs pic={Add} location={'#'} selected={selected('AddStation')} description={'Add New Station'} handleClick={() => {setTab('AddStation'); setActiveIcon('AddStation')}} />
-            <Tabs pic={Stations} location={'#'} selected={selected('Station')} description={'Train Stations'} handleClick={() => {setTab('Station'); setActiveIcon('Station')}} />
+            <Tabs pic={Stations} location={'#'} selected={selected('Station')} description={'Train Stations'} handleClick={() => {setTab('Stations'); setActiveIcon('Station')}} />
             <Tabs pic={Card} location={'#'} selected={selected('Card')} description={'Beep Cards'} handleClick={() => {setTab('Card'); setActiveIcon('Card')}} />
           </div>
           <div className='flex flex-col gap-3 border-t border-[#58ECC2] w-full items-center pt-3'>
-            <Tabs pic={Settings} location={''} selected={selected('Settings')} description={'Settings'} handleClick={() => {setTab('Settings'); setActiveIcon('Settings')}} />
+            <Tabs pic={Settings} location={''} selected={selected('Settings')} description={'Management'} handleClick={() => {setTab('Settings'); setActiveIcon('Settings')}} />
             <Tabs pic={Logout} location={'/'} description={'Log Out'} handleClick={logout} />
           </div>
 

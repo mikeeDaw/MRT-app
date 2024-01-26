@@ -98,7 +98,7 @@ const Stations = () => {
           position={[14.6579002, 121.0085]}
           icon={Leaflet.divIcon({
             className: "marker-label",
-            html: '<span class="border-2 border-slate-500 py-0.5 w-[80px] block text-center bg-indigo-100 font-bold rounded-lg tracking-wide markLbl" > Quezon Ave. </span>',
+            html: '<span class="border-2 border-slate-500 py-0.5 w-[90px] block text-center bg-indigo-100 font-bold rounded-lg tracking-wide markLbl" > Quezon Ave. </span>',
           })}
         />
         {

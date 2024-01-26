@@ -21,7 +21,6 @@ export const Middleware = () => {
   useEffect(() => {
 
       const sessionToken = localStorage.getItem(TOKEN_KEY) ?? '';
-      console.log('Middleware')
       if (sessionToken) {
           try {   // Validate session token
               const decoded = jwtDecode(sessionToken);

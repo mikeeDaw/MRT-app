@@ -5,6 +5,8 @@ import Leaflet, {LatLngExpression} from 'leaflet'
 import { Label, Select } from 'flowbite-react';
 import ConnSelect from './ConnSelect';
 import {Middleware} from '../../middleware/Middleware';
+import {motion} from 'framer-motion';
+import { introPage } from '../../constants/animate';
 
 const AddStation = () => {
 
@@ -91,8 +93,26 @@ const AddStation = () => {
 
     }
 
+    const xChange = (e: any) => {
+      const re = /^[0-9.\b]+$/;
+      const value = e.target.value
+      console.log(e)
+      if(value === '' || re.test(value)){
+        setLongitude(value)
+      }
+    }
+
+    const yChange = (e: any) => {
+      const re = /^[0-9.\b]+$/;
+      const value = e.target.value
+      console.log(e)
+      if(value === '' || re.test(value)){
+        setLatitude(value)
+      }
+    }
+
   return (
-    <>
+    <motion.div>
       <div className="w-full h-full absolute top-0 left-0 z-0">
       <Map
         center={[14.59673, 121.07609]}
@@ -217,15 +237,15 @@ const AddStation = () => {
   <MapEvents setLatitude={setLatitude} setLongitude={setLongitude} setOldMarker={setOldMarker} oldMarker={oldMarker}/>
     </Map>
       </div>
-          <div className="absolute right-16 xl:right-28 top-24 bg-white z-10 p-5 w-[320px] rounded-xl" style={{boxShadow: "0 0 10px -3px #474747"}}>
+          <motion.div {...introPage} className="absolute right-16 xl:right-28 top-24 bg-white z-10 p-5 w-[320px] rounded-xl" style={{boxShadow: "0 0 10px -3px #474747"}}>
             <div className="flex flex-col" >
               <span> Add New Station </span>
               <div className='max-h-[270px] overflow-y-scroll scrollbar-hide'>
                 <div className="flex gap-3 mt-4 h-[44px]">
                   
-                  <InputField forImg={false} textIcon="X" placeholder="12.54704" inpValue={String(longitude)} />
+                  <InputField forImg={false} textIcon="X" placeholder="12.54704" inpValue={String(longitude)} setter={xChange} />
 
-                  <InputField forImg={false} textIcon="Y" placeholder="14.5643" inpValue={String(latitude)} />
+                  <InputField forImg={false} textIcon="Y" placeholder="14.5643" inpValue={String(latitude)} setter={yChange} />
 
                 </div>
                 
@@ -261,8 +281,8 @@ const AddStation = () => {
                 <button className="bg-[#202758] px-4 text-white py-1 rounded-xl"> Save </button>
             </div>
             </div>
-          </div>
-    </>
+          </motion.div>
+    </ motion.div>
   )
 }
 

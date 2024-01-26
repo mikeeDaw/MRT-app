@@ -27,6 +27,11 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
             if (decoded.exp && decoded.exp < currentTimestamp) {
                 return res.status(401).json('Token has expired');
             }
+
+            if (decoded.iat && decoded.iat > currentTimestamp) {
+                return res.status(401).json('INvalid Token');
+            }
+            
  
             // Fetch user information based on the decoded userId
             const existingUser = await getUserById(decoded.userId);
@@ -40,7 +45,8 @@ export const isAuthenticated = async (req: express.Request, res: express.Respons
             return next(); // Move to the next middleware in the chain
 
         } catch (error) {
-            return res.status(400).json(error);
+            
+            return res.status(400).json({...error, another: 'Sample'});
         }
     } catch (err) {
         console.error(err);

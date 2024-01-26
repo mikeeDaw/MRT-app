@@ -3,33 +3,46 @@ import { RArrow, Beep, Thrash } from '../../icons'
 import { InputField } from '../'
 import Beepcard from './Beepcard'
 import {Middleware} from '../../middleware/Middleware'
+import { AnimatePresence, motion } from 'framer-motion'
+import { cardList, cardData } from '../../constants/animate'
 
 const Cards = () => {
 
-    const { getToken } = Middleware()
+    const { getToken, logout } = Middleware()
 
     const [cards, setCards] = useState<any[]>([]);
     const [trackChanges, setTrackChanges] = useState(0);
     const [selectedCard, setSelectedCard] = useState<any>({})
     const [select, setSelect] = useState(false)
     const [load, setLoad] = useState(0);
+    let delay = 0;
 
     // const dragged = useRef();
     // Generate New Beep Card
     const generateHandler = async () => {
+
         const response = await fetch('http://localhost:4000/beep/generate', {
             method: 'POST',
             headers: {
                 "Content-Type": 'application/json',
                 'Authorization': getToken()
             },
+        }).then(async (jason) => {
+            if(jason.status === 200){
+                const data = await jason.json()
+                console.log(data)
+                setTrackChanges(trackChanges+1)
+                setSelectedCard(data)
+                setSelect(true)
+                setCards([data, ...cards])
+            } else {
+                console.log('Error');
+                logout()
+            }
+        }).catch((error) => {
+            console.log(error.message)
         })
 
-        const jason = await response.json()
-        console.log(jason)
-        setTrackChanges(trackChanges+1)
-        setSelectedCard(jason)
-        setSelect(true)
     }
 
     
@@ -42,9 +55,18 @@ const Cards = () => {
                 "Content-Type": 'application/json',
                 'Authorization': getToken()
             },
+        }).then(async (jason) => {
+            if(jason.status === 200){
+                const data = await jason.json()
+                setCards(data)
+            } else {
+                console.log('Error');
+                logout()
+            }
+        }).catch((error) => {
+            console.log(error.message)
         })
-        const jason = await response.json()
-        setCards(jason);
+
     }
 
     // Load a card
@@ -59,12 +81,20 @@ const Cards = () => {
                 'Authorization': getToken()
             },
             body: JSON.stringify(updBody)
+        }).then(async (jason) => {
+            if(jason.status === 200){
+                const data = await jason.json()
+                console.log('Updated:',data)
+                setSelectedCard(data)
+                setTrackChanges(trackChanges+1)
+            } else {
+                console.log('Error');
+                logout()
+            }
+        }).catch((error) => {
+            console.log(error.message)
         })
 
-        const jason = await response.json()
-        console.log('Updated:',jason)
-        setSelectedCard(jason)
-        setTrackChanges(trackChanges+1)
     }
 
     // Delete a card
@@ -78,18 +108,29 @@ const Cards = () => {
                 'Authorization': getToken()
             },
             body: JSON.stringify(delBody)
+        }).then(async (jason) => {
+            if(jason.status === 200){
+                const data = await jason.json()
+                console.log('Deleted:',data)
+                setTrackChanges(trackChanges-1)
+                setCards(
+                    cards.filter((item) => item.uid != uid)
+                )
+                setSelect(false)
+                setSelectedCard({})
+            } else {
+                console.log('Error');
+                logout()
+            }
+        }).catch((error) => {
+            console.log(error.message)
         })
 
-        const jason = await response.json()
-        console.log('Deleted:',jason)
-        setTrackChanges(trackChanges-1)
-        setSelect(false)
-        setSelectedCard({})
     }
 
     useEffect(() => {
         getAll()
-    },[trackChanges])
+    },[])
 
     const cardClick = (data:any) => {
         setSelectedCard(data)
@@ -105,8 +146,8 @@ const Cards = () => {
 
     const loadChange = (e: any) => {
         const re = /^[0-9\b]+$/;
-        const val = e.target.value
-        if(val === '' || re.test(val)){
+        const val = e.target.value;
+        if( (val === '' || re.test(val)) && (val < 2000) ){
             setLoad(val);
         }
     }
@@ -116,35 +157,49 @@ const Cards = () => {
   return (
     <>
         <div className='w-full flex h-full'>
-            <div className='bg-slate-200 w-1/4 h-full flex flex-col items-center gap-3 py-10'>
-                {/* Search Bar */}
-                <div className='flex flex w-5/6 relative'>
-                    <div className='w-[20px] absolute bottom-2/4 translate-y-2/4 left-[10px]'>
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 15L21 21" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#323232" stroke-width="2"></path> </g></svg>
+            <motion.div className='bg-slate-200 w-1/4 h-full py-10'>
+                <motion.div className='w-full flex flex-col items-center gap-3'>
+                    {/* Search Bar */}
+                    <div className='flex flex w-5/6 relative'>
+                        <div className='w-[20px] absolute bottom-2/4 translate-y-2/4 left-[10px]'>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 15L21 21" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#323232" stroke-width="2"></path> </g></svg>
+                        </div>
+                        <input type="text" className='rounded-xl w-full ps-10' placeholder='Search'>
+                        </input>
                     </div>
-                    <input type="text" className='rounded-xl w-full ps-10' placeholder='Search'>
-                    </input>
-                </div>
 
-                <button className='bg-slate-100 py-2 text-slate-500 px-4 flex border-4 border-dashed border-slate-400 rounded-xl w-10/12 relative gap-2 items-center transition-all duration-75 hover:border-solid' onClick={generateHandler}>
-                    <div className='text-lg leading-none w-1/6'> + </div>
-                    <div> Generate Card </div>
-                </button>
+                    <button className='bg-slate-100 py-2 text-slate-500 px-4 flex border-4 border-dashed border-slate-400 rounded-xl w-10/12 relative gap-2 items-center transition-all duration-75 hover:border-solid' onClick={generateHandler}>
+                        <div className='text-lg leading-none w-1/6'> + </div>
+                        <div> Generate Card </div>
+                    </button>
 
-                {/* Card List */}
-                <div className='w-full h-[380px] relative' id='idList'>
-                    <div className='overflow-y-scroll w-full scrollbar-hide flex flex-col h-[380px] items-center gap-2 '>
-                    {
-                        cards.map((elem)=> <Beepcard uid={elem.uid} key={Number(elem.uid)} selected={selectedCard.uid == elem.uid} handleClick={() => {cardClick(elem)}} /> )
-                    }
+                    {/* Card List */}
+                    <div className='w-full h-[380px] relative' id='idList'>
+                        <div className='overflow-y-scroll w-full scrollbar-hide flex flex-col h-[380px] items-center gap-2 '>
+                     
+                        {
+                            cards.map((elem)=>{ 
+                                delay+=0.12; 
+                                return (
+                                <AnimatePresence>
+                                <motion.div key={elem.uid} initial={{y:-30,opacity:0}} animate={{y:0,opacity:1, transition: {type:'spring',bounce:0.4,delay:delay, duration: 0.7} }} exit={{x:-10, opacity:0}} className='w-full flex justify-center'>        
+                                    <Beepcard uid={elem.uid} key={Number(elem.uid)} selected={selectedCard.uid == elem.uid} handleClick={() => {cardClick(elem)}} /> 
+                                </motion.div>
+                                </AnimatePresence>
+                                ) 
+                                }) 
+                        }
+                      
+                        </div>
                     </div>
-                </div>
+                </motion.div>
 
 
+            </motion.div>
 
-            </div>
             {/* Middle Area */}
             <div className='w-1/2 h-full flex flex-col items-center justify-center relative pt-3'>
+                
                 {
                     select ? (
                         /* Beep Card */

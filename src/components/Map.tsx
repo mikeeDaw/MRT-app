@@ -34,6 +34,7 @@ const Map : React.FC<Props> = ({center, zoom, zoomSnap, scrollWheelZoom, draggin
     <TileLayer
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      
     />
 
     {children}

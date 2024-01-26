@@ -3,8 +3,9 @@ import { Navibar, SidebarNav, AddStation, Cards } from "../components/dashboard"
 import EditStation from "../components/dashboard/EditStation";
 import SideNav from "../components/dashboard/sideNav/SideNav";
 import TopNav from "../components/dashboard/sideNav/TopNav";
-import { Stations } from "../components";
+import Stations  from "../components/dashboard/Stations/Stations";
 import Settings from "../components/dashboard/settings/Settings";
+import { AnimatePresence } from "framer-motion";
 
 
 const AdminDash = () => {
@@ -35,9 +36,9 @@ const AdminDash = () => {
         <div className="flex flex-col w-full">
             <TopNav />
           <div className="ms-0 w-full h-[calc(100vh-60px)] relative" id="contentArea">
-
-            {generateView()}
-
+            <AnimatePresence>
+              {generateView()}
+            </AnimatePresence>
           </div>
         </div>  
       </div>

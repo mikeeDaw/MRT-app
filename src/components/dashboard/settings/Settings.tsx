@@ -4,7 +4,7 @@ import { Middleware } from '../../../middleware/Middleware'
 
 const Settings = () => {
 
-  const { getToken } = Middleware();
+  const { getToken, logout } = Middleware();
 
   const [constants, setConstants] = useState<any>(undefined)
   const [editing, setEditing] = useState(false);
@@ -13,25 +13,44 @@ const Settings = () => {
   const [minFare, setMinFare] = useState(0);
   const [perKM, setPerKM] = useState(0);
   const [minLoad, setMinLoad] = useState(0);
+  const [cancel, setCancel] = useState(0)
+  
 
   const getData = async () => {
-    const response = await fetch('http://localhost:4000/constants/get', {
-      method: 'GET',
-      headers: {
-        "Content-Type": 'application/json',
-        'Authorization': getToken()
-      },
-    })
 
-    const jason = await response.json();
-    setConstants(jason);
-    setPenalty(jason.penalty);
-    setMinFare(jason.minFare);
-    setPerKM(jason.farePerKM);
-    setMinLoad(jason.minLoad);
+    try {
+      const response = await fetch('http://localhost:4000/constants/get', {
+        method: 'GET',
+        headers: {
+          "Content-Type": 'application/json',
+          'Authorization': getToken()
+        },
+      })
+      .then(async (jason) => {
+        if(jason.status === 200){
+          const data = await jason.json();
+
+          setConstants(data);
+          setPenalty(data.penalty);
+          setMinFare(data.minFare);
+          setPerKM(data.farePerKM);
+          setMinLoad(data.minLoad);
+
+        } else {
+          console.log("error to")
+          logout()
+        }
+
+      })
+
+    } catch (error : any) {
+      console.log(error.message);
+    }
+
   }
 
   const updateConst = async () => {
+
     const updBody = { penalty: penalty, minFare: minFare, farePerKM: perKM, minLoad: minLoad };
 
     const response = await fetch('http://localhost:4000/constants/edit', {
@@ -42,15 +61,28 @@ const Settings = () => {
       },
       body: JSON.stringify(updBody)
     })
+    .then(async (jason) => {
 
-    const jason = await response.json()
-    setEditing(false);
+      if(jason.status === 200) {
+        const data = await jason.json()
+        setEditing(false);
+      } else {
+        console.log('Error');
+        logout()
+      }
+    })
+
   }
 
-  console.log(penalty,minFare,perKM, minLoad)
+  const cancelConst = () => {
+    setCancel(cancel+1)
+    setEditing(false)
+  }
+
   useEffect(()=>{
     getData();
   },[])
+
   
   return (
     <>
@@ -61,7 +93,7 @@ const Settings = () => {
             {
               editing ? (
                 <>
-                <button className='absolute right-12 top-[-7px] me-3 border p-2 rounded-full bg-[#e73030] border-[#e73030]' id='constCanc' onClick={()=>(setEditing(false))}> 
+                <button className='absolute right-12 top-[-7px] me-3 border p-2 rounded-full bg-[#e73030] border-[#e73030]' id='constCanc' onClick={cancelConst}> 
                   <svg viewBox="0 0 24 24" fill="none" className='w-5' xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z" strokeWidth="2" stroke='#FFFFFF' fill="#ffffff"></path> </g></svg>
                 </button>
                 <button className='absolute right-0 top-[-7px] me-3 border p-2 rounded-full bg-[#10c78c] border-[#10c78c]' id='constConf' onClick={updateConst}> 
@@ -84,10 +116,10 @@ const Settings = () => {
               {
                 constants && (
                   <>
-                  <SettingItem title='Penalty Fee' price={constants.penalty} edit={editing} setter={setPenalty} />
-                  <SettingItem title='Minimum Fare' price={constants.minFare} edit={editing} setter={setMinFare} />
-                  <SettingItem title='Fare Per KM' price={constants.farePerKM} edit={editing} setter={setPerKM} />
-                  <SettingItem title='Minimum Load' price={constants.minLoad} edit={editing} setter={setMinLoad} />
+                  <SettingItem title='Penalty Fee' price={constants.penalty} edit={editing} setter={setPenalty} cancel={cancel} />
+                  <SettingItem title='Minimum Fare' price={constants.minFare} edit={editing} setter={setMinFare} cancel={cancel} />
+                  <SettingItem title='Fare Per KM' price={constants.farePerKM} edit={editing} setter={setPerKM} cancel={cancel}/>
+                  <SettingItem title='Minimum Load' price={constants.minLoad} edit={editing} setter={setMinLoad} cancel={cancel} />
                   </>
                 )
               }

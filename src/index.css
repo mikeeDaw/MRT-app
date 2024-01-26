@@ -123,3 +123,8 @@ code {
   border-bottom: 1px solid #00B38C; 
   color: #00B38C;
 }
+
+/* .tabber::before{
+  content: '';
+  @apply absolute left-[-15px] top-1/2 bg-[#202758] p-2 rotate-45 border border-[#58ECC2] translate-y-[-50%] z-20
+} */
