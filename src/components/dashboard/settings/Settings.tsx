@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SettingItem from './SettingItem'
 import { Middleware } from '../../../middleware/Middleware'
+const endpoint = process.env.REACT_APP_URL
 
 const Settings = () => {
 
@@ -19,7 +20,7 @@ const Settings = () => {
   const getData = async () => {
 
     try {
-      const response = await fetch('http://localhost:4000/constants/get', {
+      const response = await fetch(`${endpoint}/constants/get`, {
         method: 'GET',
         headers: {
           "Content-Type": 'application/json',
@@ -53,7 +54,7 @@ const Settings = () => {
 
     const updBody = { penalty: penalty, minFare: minFare, farePerKM: perKM, minLoad: minLoad };
 
-    const response = await fetch('http://localhost:4000/constants/edit', {
+    const response = await fetch(`${endpoint}/constants/edit`, {
       method: 'PATCH',
       headers: {
         "Content-Type": 'application/json',

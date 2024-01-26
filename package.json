@@ -10,6 +10,7 @@
     "@types/node": "^16.18.68",
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
+    "dotenv": "^16.4.1",
     "flowbite-react": "^0.7.2",
     "framer-motion": "^11.0.3",
     "jwt-decode": "^4.0.0",

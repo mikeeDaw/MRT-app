@@ -5,6 +5,7 @@ import Beepcard from './Beepcard'
 import {Middleware} from '../../middleware/Middleware'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cardList, cardData } from '../../constants/animate'
+const endpoint = process.env.REACT_APP_URL
 
 const Cards = () => {
 
@@ -21,7 +22,7 @@ const Cards = () => {
     // Generate New Beep Card
     const generateHandler = async () => {
 
-        const response = await fetch('http://localhost:4000/beep/generate', {
+        const response = await fetch(`${endpoint}/beep/generate`, {
             method: 'POST',
             headers: {
                 "Content-Type": 'application/json',
@@ -48,8 +49,8 @@ const Cards = () => {
     
     // Get All beep cards
     const getAll = async () => {
-
-        const response = await fetch('http://localhost:4000/beep/fetchAll', {
+        console.log(endpoint)
+        const response = await fetch(`${endpoint}/beep/fetchAll`, {
             method: 'GET',
             headers: {
                 "Content-Type": 'application/json',
@@ -101,7 +102,7 @@ const Cards = () => {
     const deleteCard = async (uid: string) => {
 
         const delBody = {uid:uid}
-        const response = await fetch('http://localhost:4000/beep/deleteCard', {
+        const response = await fetch(`${endpoint}/beep/deleteCard`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": 'application/json',
