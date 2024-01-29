@@ -44,7 +44,10 @@ const Stations = () => {
       </div>
 
       <div className='flex flex-col w-5/12 bg-cyan-100 p-5 gap-3'>
-          <div className='bg-lime-100 py-3 px-2'> Station List Header</div>
+          <div className='bg-lime-100 py-3 px-2 flex flex-row'> 
+              <span> Code </span>
+              <span> Name </span>
+          </div>
           <div className='flex flex-col bg-emerald-100 h-full'> Station Cards </div>
       </div>
     </div>

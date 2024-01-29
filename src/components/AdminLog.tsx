@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import InputField from './InputField'
 import { Navigate, useNavigate } from 'react-router';
 import {Middleware, isLogged} from '../middleware/Middleware';
-
+const endpoint = process.env.REACT_APP_URL
 
 const AdminLog = () => {
 
@@ -27,7 +27,7 @@ const AdminLog = () => {
         
         const fetchBody = {username:username, password:password}
 
-        const response = await fetch('http://localhost:4000/auth/login', {
+        const response = await fetch(`${endpoint}/auth/login`, {
             method: 'POST',
             headers: {
                 "Content-Type": 'application/json'
