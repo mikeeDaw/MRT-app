@@ -22,7 +22,7 @@ const AdminDash = () => {
     switch (tab) {
       case 'Card' : return <Cards/>
       case 'AddStation' : return <AddStation/>
-      case 'Stations' : return <Stations />
+      case 'Station' : return <Stations />
       case 'Settings' : return <Settings />
     }
   }

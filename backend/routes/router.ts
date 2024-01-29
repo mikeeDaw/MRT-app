@@ -2,15 +2,15 @@ import express, { response } from 'express';
 import { adminModel } from '../models';
 import { login, register, isAuthenticated } from "../controller/authentication";
 import { generateCard, getAllCards, deleteCard, updateLoad } from '../controller/beepCard';
-import { makeStation } from '../controller/trainStation';
+import { makeStation, getAllStations } from '../controller/trainStation';
 import { getConstant, updConstDocu } from '../controller/constants';
 
 const router = express.Router();
 
-router.get('/:station', (req, res) => {
-    let a = req.params
-    res.json({msg: a.station })
- });
+// router.get('/:station', (req, res) => {
+//     let a = req.params
+//     res.json({msg: a.station })
+//  });
 
 // Add new admin document
 router.post('/', async (req, res) => {
@@ -45,6 +45,7 @@ router.patch('/beep/load', isAuthenticated, updateLoad)
 
 // Station Operations
 router.post('/station/add', isAuthenticated, makeStation)
+router.get('/station/get/all', isAuthenticated, getAllStations)
 
 // Constant Operations
 router.get('/constants/get', isAuthenticated, getConstant )

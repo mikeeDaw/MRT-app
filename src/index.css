@@ -117,11 +117,18 @@ code {
   border: 1px solid transparent;
 }
 
-.chargesInp:focus{
+.chargesInp:focus, .editInp:focus{
   box-shadow: none;
   border: none;
+}
+
+.chargesInp:focus{
   border-bottom: 1px solid #00B38C; 
   color: #00B38C;
+}
+
+.stationCard:hover{
+  background-color: #3ee7c3;
 }
 
 /* .tabber::before{

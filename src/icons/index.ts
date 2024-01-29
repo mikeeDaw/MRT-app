@@ -9,6 +9,7 @@ import Add from './addStation.svg';
 import Logout from './logout.svg';
 import Settings from './settings.svg';
 import Card from './card.svg';
-import Stations from './Train.svg'
+import Stations from './Train.svg';
+import Thrash2 from './thrash2.svg'
 
-export {Wallet, Pay, Red, Beep, RArrow, Thrash, MRT, Add, Logout, Settings, Card, Stations }
+export {Wallet, Pay, Red, Beep, RArrow, Thrash, MRT, Add, Logout, Settings, Card, Stations, Thrash2 }
