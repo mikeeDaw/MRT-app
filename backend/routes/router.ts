@@ -2,7 +2,7 @@ import express, { response } from 'express';
 import { adminModel } from '../models';
 import { login, register, isAuthenticated } from "../controller/authentication";
 import { generateCard, getAllCards, deleteCard, updateLoad } from '../controller/beepCard';
-import { makeStation, getAllStations } from '../controller/trainStation';
+import { makeStation, getAllStations, updateStation } from '../controller/trainStation';
 import { getConstant, updConstDocu } from '../controller/constants';
 
 const router = express.Router();
@@ -45,7 +45,8 @@ router.patch('/beep/load', isAuthenticated, updateLoad)
 
 // Station Operations
 router.post('/station/add', isAuthenticated, makeStation)
-router.get('/station/get/all', isAuthenticated, getAllStations)
+router.get('/station/get/all', getAllStations)
+router.patch('/station/updateStat', isAuthenticated, updateStation)
 
 // Constant Operations
 router.get('/constants/get', isAuthenticated, getConstant )

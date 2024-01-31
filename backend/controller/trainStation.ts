@@ -1,5 +1,5 @@
 import express from 'express';
-import { createStation, getStations } from '../models/stationModel';
+import { createStation, getStations, updateStationByCode } from '../models/stationModel';
 
 export const makeStation = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
@@ -26,4 +26,16 @@ export const getAllStations = async (req: express.Request, res: express.Response
         console.log("Error in catch")
     }
 
+}
+
+export const updateStation = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const {origCode ,name, code, connected, coordinates} = req.body;
+
+    try {
+        
+        const updated = await updateStationByCode(origCode,{name,code,connected,coordinates})
+        res.status(200).json(updated)
+    } catch (error) {
+        res.status(400).json({message: 'Update Failed.'})
+    }
 }

@@ -21,7 +21,14 @@ code {
 }
 
 .marker-label{
-  position: relative;
+  position: absolute;
+  transform: rotate(37deg);
+  width: 27px;
+  left: -115px;
+  top: -60px;
+  opacity: 1;
+  @apply border-b-2 border-slate-500;
+  z-index: 50;
 }
 
 .marker-label::after{
@@ -29,9 +36,13 @@ code {
   position: absolute;
   transform: rotate(37deg);
   width: 27px;
-  left: 76px;
-  bottom: -17px;
+  left: 86px;
+  bottom: -23px;
   @apply border-b-2 border-slate-500;
+}
+
+.marker-label:hover {
+  z-index: 1000 !important;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
