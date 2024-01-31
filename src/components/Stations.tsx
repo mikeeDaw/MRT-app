@@ -5,8 +5,6 @@ import { Red } from "../icons";
 import Map from './Map'
 const endpoint = process.env.REACT_APP_URL
 
-
-
 const Stations = () => {
   // x , y
 
@@ -36,6 +34,7 @@ const Stations = () => {
     getTheStations();
   },[])
 
+  // For polyline
   useEffect(()=>{
     let poly:any[] = []
     allStations.forEach((station:any) => {

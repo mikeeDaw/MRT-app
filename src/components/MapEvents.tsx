@@ -6,10 +6,15 @@ interface Props {
     setLongitude: Dispatch<SetStateAction<Number | undefined>>,
     setLatitude: Dispatch<SetStateAction<Number | undefined>>,
     setOldMarker : React.Dispatch<React.SetStateAction<Leaflet.Marker<any> | undefined>>
-    oldMarker :  Leaflet.Marker<any> | undefined
+    removeLines : React.Dispatch<React.SetStateAction<Leaflet.LatLngExpression[][]>>,
+    refreshChoice : React.Dispatch<React.SetStateAction<string[]>>,
+    refNewPoly : React.Dispatch<React.SetStateAction<Leaflet.LatLngExpression[][]>>,
+    refInitPoly : React.Dispatch<React.SetStateAction<any[]>>,
+    oldMarker :  Leaflet.Marker<any> | undefined,
+    createFlag : boolean
 
 }
-const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, oldMarker}) => {
+const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, oldMarker, removeLines, refreshChoice, refNewPoly, refInitPoly, createFlag}) => {
 
 
     let xcoor : number = 0
@@ -29,6 +34,10 @@ const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, old
           ycoor = e.latlng.lng
           setLongitude(ycoor);
           setLatitude(xcoor);
+          removeLines([])
+          refreshChoice([])
+          refInitPoly([])
+          refNewPoly([])
 
             if(oldMarker != undefined) {
                 map.removeLayer(oldMarker!);
@@ -42,6 +51,10 @@ const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, old
             
         }
       });
+
+      if(createFlag){
+        map.removeLayer(oldMarker!)
+      }
   
     return <></>
 }
