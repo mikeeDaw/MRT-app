@@ -1,16 +1,61 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Stations, DataArea } from '../components';
 // import authCxt from '../components/context/AuthContext';
+import Leaflet, { LatLngExpression, latLng } from "leaflet";
 import {Middleware} from '../middleware/Middleware'
+import { useParams } from 'react-router-dom';
+const endpoint = process.env.REACT_APP_URL
 
 const Home = () => {
 
     const [tabAdmin, setTabAdmin] = useState(false)
-    // const {auth} = useContext(authCxt)
+    const [allStations, setAllStations] = useState<any>([])
+    const [polyLine, setPolyLine] = useState<LatLngExpression[][]>([])
+
+    const pars = useParams()
     const {getToken} = Middleware()
+
+    const getTheStations = async () => {
+      const response = await fetch(`${endpoint}/station/get/all`, {
+        method: 'GET',
+        headers: {
+            "Content-Type": 'application/json',
+        },
+      }).then(async (jason) => {
+          if(jason.status === 200){
+              const data = await jason.json()
+              setAllStations(data)
+  
+          } else {
+              console.log('Error');
+          }
+      }).catch((error) => {
+          console.log(error.message)
+      })
+    }
+
+    useEffect(() => {
+      getTheStations()
+    }, [])
+
+  // For polyline
+  useEffect(()=>{
+    let poly:any[] = []
+    allStations.forEach((station:any) => {
+      station.connected.forEach((code: String) => {
+        let connect:any[] = [Leaflet.latLng(station.coordinates.x,station.coordinates.y)]
+        let conStat = allStations.find((item:any) => item.code == code)
+        connect.push(Leaflet.latLng(conStat.coordinates.x,conStat.coordinates.y))
+        poly.push(connect)
+      })
+    })
+    setPolyLine(poly)
+  }, [allStations])
+
+  console.log(pars)
   return (
     <div className='relative'>
-        <Stations />
+        <Stations allStations={allStations} polyLine={polyLine} />
         <DataArea setTabAdmin={setTabAdmin} tabAdmin={tabAdmin} />
     </div>
 

@@ -124,6 +124,16 @@ code {
   stroke: #e73030;
   fill: #e73030;
 }
+
+#constConfDel:hover{
+  transition: all 0.2s ease-in;
+  @apply bg-white
+}
+
+#constConfDel:hover *{
+  transition: all 0.2s ease-in;
+  stroke: #e73030;
+}
 .chargesInp{
   border: 1px solid transparent;
 }
@@ -140,6 +150,11 @@ code {
 
 .stationCard:hover{
   background-color: #3ee7c3;
+}
+
+.toastMsg {
+  left: 85px !important;
+  top: 75px !important;
 }
 
 /* .tabber::before{

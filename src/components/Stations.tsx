@@ -5,49 +5,57 @@ import { Red } from "../icons";
 import Map from './Map'
 const endpoint = process.env.REACT_APP_URL
 
-const Stations = () => {
+interface Props {
+  allStations : any[],
+  polyLine : LatLngExpression[][]
+}
+
+
+
+const Stations : React.FC<Props> = ({allStations, polyLine}) => {
   // x , y
 
-  const [allStations, setAllStations] = useState<any>([])
-  const [polyLine, setPolyLine] = useState<LatLngExpression[][]>()
+  // const [allStations, setAllStations] = useState<any>([])
+  // const [polyLine, setPolyLine] = useState<LatLngExpression[][]>()
 
-  const getTheStations = async () => {
-    const response = await fetch(`${endpoint}/station/get/all`, {
-      method: 'GET',
-      headers: {
-          "Content-Type": 'application/json',
-      },
-    }).then(async (jason) => {
-        if(jason.status === 200){
-            const data = await jason.json()
-            setAllStations(data)
+  // const getTheStations = async () => {
+  //   const response = await fetch(`${endpoint}/station/get/all`, {
+  //     method: 'GET',
+  //     headers: {
+  //         "Content-Type": 'application/json',
+  //     },
+  //   }).then(async (jason) => {
+  //       if(jason.status === 200){
+  //           const data = await jason.json()
+  //           setAllStations(data)
 
-        } else {
-            console.log('Error');
-        }
-    }).catch((error) => {
-        console.log(error.message)
-    })
-  }
+            
 
-  useEffect(()=>{
-    getTheStations();
-  },[])
+  //       } else {
+  //           console.log('Error');
+  //       }
+  //   }).catch((error) => {
+  //       console.log(error.message)
+  //   })
+  // }
 
-  // For polyline
-  useEffect(()=>{
-    let poly:any[] = []
-    allStations.forEach((station:any) => {
-      station.connected.forEach((code: String) => {
-        let connect:any[] = [Leaflet.latLng(station.coordinates.x,station.coordinates.y)]
-        let conStat = allStations.find((item:any) => item.code == code)
-        connect.push(Leaflet.latLng(conStat.coordinates.x,conStat.coordinates.y))
-        poly.push(connect)
-      })
-    })
-    setPolyLine(poly)
-    console.log(poly)
-  }, [allStations])
+  // useEffect(()=>{
+  //   getTheStations();
+  // },[])
+
+  // // For polyline
+  // useEffect(()=>{
+  //   let poly:any[] = []
+  //   allStations.forEach((station:any) => {
+  //     station.connected.forEach((code: String) => {
+  //       let connect:any[] = [Leaflet.latLng(station.coordinates.x,station.coordinates.y)]
+  //       let conStat = allStations.find((item:any) => item.code == code)
+  //       connect.push(Leaflet.latLng(conStat.coordinates.x,conStat.coordinates.y))
+  //       poly.push(connect)
+  //     })
+  //   })
+  //   setPolyLine(poly)
+  // }, [allStations])
 
   const titleCase = (inputString:String) => {
       return inputString.replace(/\w\S*/g, (word) => {

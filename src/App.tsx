@@ -19,6 +19,7 @@ function App() {
             <Route element={<AdminDash />} path="/admin" />
           </Route>
           <Route element={<Home />} path="/" />
+          <Route path="/:station/:pass" element={<Home />}/>
         </Routes>
       </Router>
       {/* </authCxt.Provider> */}

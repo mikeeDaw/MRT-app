@@ -11,10 +11,11 @@ interface Props {
     refNewPoly : React.Dispatch<React.SetStateAction<Leaflet.LatLngExpression[][]>>,
     refInitPoly : React.Dispatch<React.SetStateAction<any[]>>,
     oldMarker :  Leaflet.Marker<any> | undefined,
-    createFlag : boolean
+    createFlag : boolean,
+    setCreateFlag : React.Dispatch<React.SetStateAction<boolean>>
 
 }
-const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, oldMarker, removeLines, refreshChoice, refNewPoly, refInitPoly, createFlag}) => {
+const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, oldMarker, removeLines, refreshChoice, refNewPoly, refInitPoly, createFlag, setCreateFlag}) => {
 
 
     let xcoor : number = 0
@@ -24,7 +25,7 @@ const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, old
     let LIcon = Leaflet.icon({
         iconUrl: Red,
         iconSize: [40, 40],
-        iconAnchor: [25, 50],
+        iconAnchor: [20, 40],
       })
 
     let map = useMapEvents({
@@ -54,6 +55,7 @@ const MapEvents:React.FC<Props> = ({setLatitude, setLongitude, setOldMarker, old
 
       if(createFlag){
         map.removeLayer(oldMarker!)
+        setCreateFlag(false)
       }
   
     return <></>

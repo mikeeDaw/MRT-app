@@ -8,6 +8,9 @@ import {motion} from 'framer-motion';
 import { introPage } from '../../constants/animate';
 import { StationMod } from '../types/models';
 import { connected } from 'process';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const endpoint = process.env.REACT_APP_URL
 
 const AddStation = () => {
@@ -25,6 +28,7 @@ const AddStation = () => {
     const [oldMarker, setOldMarker] = useState<Leaflet.Marker | undefined>(undefined)
     const [newConns, setNewConns] = useState(0)
     const [createdFlag, setCreatedFlag] = useState(false)
+    const [statCoord, setStatCoord] = useState<LatLngExpression[]>([])
     // States for input fields
     const [chosenStat, setChosenStat] = useState<string[]>([])
     const [statName, setStatName] = useState("");
@@ -57,9 +61,8 @@ const AddStation = () => {
 
       const namePattern = /^[a-zA-Z\s]{2,}$/
       const codePattern = /^[a-zA-Z0-9]{5}$/
-      console.log(statName, statCode, !statName)
 
-      if(!namePattern.test(statName) || !codePattern.test(statCode) || !latitude || !longitude || (chosenStat.length == 0)){
+      if(!namePattern.test(statName) || !codePattern.test(statCode) || !latitude || !longitude ){
         return console.log('Mali yung Input mo')
       } else {
         const response = await fetch(`${endpoint}/station/add`, {
@@ -79,6 +82,16 @@ const AddStation = () => {
                 setLongitude(undefined)
                 setCreatedFlag(true)
                 setNewPoly([])
+
+                toast.success(`${titleCase(String(statName))} Station was Created!`, {
+                  position: "top-left",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
             } else {
                 console.log('Error');
             }
@@ -92,16 +105,21 @@ const AddStation = () => {
       getTheStations()
     },[])
 
-    // For Polyline
+    // For Polyline & LatLng
     useEffect(()=>{
       let poly:any[] = []
       stations.forEach((station:any) => {
+        let stationPoint = Leaflet.latLng(station.coordinates.x,station.coordinates.y)
+
         station.connected.forEach((code: String) => {
           let connect:any[] = [Leaflet.latLng(station.coordinates.x,station.coordinates.y)]
           let conStat = stations.find((item:any) => item.code == code)
           connect.push(Leaflet.latLng(Number(conStat!.coordinates.x),Number(conStat!.coordinates.y) ))
           poly.push(connect)
+
         })
+
+        setStatCoord([...statCoord, stationPoint])
       })
       setPolyLine(poly)
     }, [stations])
@@ -112,10 +130,10 @@ const AddStation = () => {
     const xChange = (e: any) => {
       const re = /^[0-9.\b]+$/;
       const value = e.target.value
-      console.log(e)
       if(value === '' || re.test(value)){
         setLongitude(value)
       }
+      console.log(statCoord)
     }
 
     const yChange = (e: any) => {
@@ -137,22 +155,35 @@ const AddStation = () => {
     const connectClick = (code:string, sid: number) => {
 
       let targetStation = stations.find((item) => item.code == code)
-      console.log(targetStation)
 
-      if(chosenStat.find((item) => item == code)){
-        console.log(newPoly)
-        setChosenStat(chosenStat.filter((item) => item != code));
-        setinitNewPoly(initNewPoly.filter((item) => item.id != sid))
+      let distance = Leaflet.latLng(Number(latitude),Number(longitude)).distanceTo(Leaflet.latLng(Number(targetStation?.coordinates.x), Number(targetStation?.coordinates.y)))
+      
+      if(!(distance < 500)){
+        if(chosenStat.find((item) => item == code)){
+            setChosenStat(chosenStat.filter((item) => item != code));
+            setinitNewPoly(initNewPoly.filter((item) => item.id != sid))
+        } else {
+          setChosenStat([...chosenStat, code]);
+          setinitNewPoly([
+            ...initNewPoly, 
+            {
+              id:sid,
+              coords: {x:Number(targetStation?.coordinates.x), y:Number(targetStation?.coordinates.y)}
+            }
+          ])
+        }
       } else {
-        setChosenStat([...chosenStat, code]);
-        setinitNewPoly([
-          ...initNewPoly, 
-          {
-            id:sid,
-            coords: {x:Number(targetStation?.coordinates.x), y:Number(targetStation?.coordinates.y)}
-          }
-        ])
+        toast.error(`${titleCase(String(targetStation?.name))} is within 500 meters.`, {
+          position: "top-left",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       }
+
     }
 
     useEffect(()=> {
@@ -196,9 +227,13 @@ const AddStation = () => {
         }
           <Polygon positions={polyLine ?? []} pathOptions={LineOpts} />
           <Polygon positions={newPoly ?? []} pathOptions={{color:'#00896b', weight:5, dashArray:'20 20'}} />
-          <MapEvents setLatitude={setLatitude} setLongitude={setLongitude} setOldMarker={setOldMarker} oldMarker={oldMarker} removeLines={setNewPoly} refreshChoice={setChosenStat} refNewPoly={setNewPoly} refInitPoly={setinitNewPoly} createFlag={createdFlag} />
+          <MapEvents setLatitude={setLatitude} setLongitude={setLongitude} setOldMarker={setOldMarker} oldMarker={oldMarker} removeLines={setNewPoly} refreshChoice={setChosenStat} refNewPoly={setNewPoly} refInitPoly={setinitNewPoly} createFlag={createdFlag} setCreateFlag={setCreatedFlag} />
         </Map>
       </div>
+      <div className='absolute left-10'>
+        <ToastContainer className="toastMsg" stacked />
+      </div>
+     
       {/* Add Station Section */}
       <motion.div {...introPage} className="absolute right-16 xl:right-28 top-24 bg-white z-10 p-5 pb-4 w-[370px] rounded-xl" style={{boxShadow: "0 0 10px -3px #474747"}}>
         <div className="flex flex-col" >

@@ -8,6 +8,7 @@ import { AnimatePresence, animate, motion } from 'framer-motion';
 import { simpleFade } from '../../../constants/animate';
 import { StationMod } from '../../types/models';
 import MapFly from './MapFly';
+import { ToastContainer, toast } from 'react-toastify';
 const endpoint = process.env.REACT_APP_URL
 
 const Stations = () => {
@@ -27,6 +28,7 @@ const Stations = () => {
     const [yCoord, setYCoord] = useState(0);
     const [editing, setEditing] = useState(false)
     const [sortedConn,setSortedConn] = useState<{code:String, name:String}[]>([])
+    const [oldConnect, setOldConnect] = useState<String[]>()
     const [connects, setConnects] = useState<String[]>([])
 
     const getAllStations = async () => {
@@ -40,7 +42,7 @@ const Stations = () => {
             if(jason.status === 200){
                 const data = await jason.json()
                 setStationCard(data)
-                console.log(data)
+                
             } else {
                 console.log('Error');
                 logout()
@@ -51,17 +53,32 @@ const Stations = () => {
     }
 
     const updateTheStation = async () => {
+
+      const removed = oldConnect?.filter((item) => !connects.includes(item))
+      const added = connects.filter((item) => !oldConnect?.includes(item) )
+      const stayed = oldConnect?.filter((item) => connects.includes(item))
+
       const response = await fetch(`${endpoint}/station/updateStat`, {
         method: 'PATCH',
         headers: {
             "Content-Type": 'application/json',
             "Authorization": getToken()
         },
-        body: JSON.stringify({origCode: selectedSt?.code, code: sCode, name:name, connected: connects, coordinates: {x:xCoord,y:yCoord}})
+        body: JSON.stringify({origCode: selectedSt?.code, code: sCode, name:name, connRem: removed, connAdd: added,connStay: stayed, coordinates: {x:xCoord,y:yCoord}})
       }).then(async (jason) => {
           if(jason.status === 200){
               const data = await jason.json()
+              setOldConnect(data.connected)
               console.log('UPDATED:',data)
+              toast.success(`${titleCase(data.name)} Station was Updated!`, {
+                position: "top-left",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
           } else {
               console.log('Error');
           }
@@ -76,13 +93,15 @@ const Stations = () => {
       getAllStations()
     },[])
 
+    // For Polylines
     useEffect(()=>{
       let poly:any[] = []
       let codes: {code:String, name:String}[] = []
       stationCard.forEach((station:any) => {
         codes.push({code:station.code, name:station.name})
         station.connected.forEach((code: String) => {
-          let connect:any[] = [Leaflet.latLng(station.coordinates.x,station.coordinates.y)]
+          let stationPoint = Leaflet.latLng(station.coordinates.x,station.coordinates.y);
+          let connect:any[] = [stationPoint]
           let conStat = stationCard.find((item:any) => item.code == code)
           connect.push(Leaflet.latLng(conStat.coordinates.x,conStat.coordinates.y))
           poly.push(connect)
@@ -103,8 +122,20 @@ const Stations = () => {
     setScode(String(station.code))
     setXCoord(Number(station.coordinates.x))
     setYCoord(Number(station.coordinates.y))
+    setOldConnect(station.connected)
     setSelectedSt(station)
     setConnects(station.connected)
+  }
+
+  const resetSelected = () => {
+    setName("")
+    setScode("")
+    setXCoord(0)
+    setYCoord(0)
+    setOldConnect([])
+    setSelectedSt(undefined)
+    setConnects([])
+    setEditing(false)
   }
 
   function moveToFront(...codesToMove: String[]): {code:String, name:String}[] {
@@ -139,8 +170,9 @@ const Stations = () => {
         {/* Map Part */}
         <div className='rounded-2xl h-3/6 z-0'>
            <MapContainer
-              center={[14.6183225267, 121.050621464]}
-              zoom={16}
+              center={[14.6185267, 121.050621464]}
+              zoom={17}
+              zoomSnap={16}
               className='h-full w-full rounded-t-2xl'
             >
               <TileLayer
@@ -157,7 +189,14 @@ const Stations = () => {
                     <Marker key={MKey} position={[coords.x, coords.y]}
                     icon={Leaflet.divIcon({
                       className: "bg-none",
-                      html: `<div class="bg-[#202758] rounded-full p-2.5 border-4 border-[#0ed5aa] translate-x-[-30%] translate-y-[-25%]"> </div>`
+                      html: `<div class="bg-[#202758] rounded-full p-2.5 border-4 border-[#0ed5aa] translate-x-[-30%] translate-y-[-25%] relative z-10"> </div>`
+                    })}
+                    >
+                    </Marker>
+                    <Marker key={MKey+6000} position={[coords.x+0.001, coords.y+0.002]}
+                    icon={Leaflet.divIcon({
+                      className: "bg-none",
+                      html: `<div class=" border-2 bg-[#000000b5] border-black rounded-full w-fit p-2 py-0.5 font-bold text-white truncate relative z-20 "> ${titleCase(stat.name)} </div>`
                     })}
                     >
                     </Marker>
@@ -191,7 +230,7 @@ const Stations = () => {
                   setName(e.target.value) }} />
 
                 <span className='text-sm font-bold'> Station Code </span>
-                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 me-10 focus:border-none editInp mb-3' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={sCode ? sCode : '- Select a Station -'} disabled={!editing} onChange={(e) => {
+                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 me-10 focus:border-none editInp mb-3' style={{border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={sCode ? sCode : '- Select a Station -'} disabled={true} onChange={(e) => {
                   setScode(e.target.value) }} />
 
                 <span className='text-sm font-bold mb-1'> Coordinates </span>
@@ -238,6 +277,8 @@ const Stations = () => {
               {
                 selectedSt ? (
                   sortedConn.map((code) => {
+                    if(selectedSt.code == code.code) { return <></>}
+
                     const flag = connects.find((item) => item == code.code)
                     return (
                       <>
@@ -266,6 +307,11 @@ const Stations = () => {
         </div>
 
       </div>
+
+      <div className='absolute left-10'>
+        <ToastContainer className="toastMsg" />
+      </div>
+
       {/* Stations List Section */}
       <div className='flex flex-col w-5/12 p-5 pb-6 rounded-xl gap-3' style={{boxShadow: '4px 4px 22px -5px #696969'}}>
         <table>
@@ -287,7 +333,7 @@ const Stations = () => {
                   {
                     stationCard.map((card) => {
                     delay+=0.12
-                    return <StationCard key={card.code} code={card.code} name={titleCase(card.name) + " Station"} delay={delay} selected={selectedSt ? (selectedSt.code == card.code) : false} setSelect={() => {statClick(card); setEditing(false)}} />
+                    return <StationCard key={card.code} code={card.code} name={titleCase(card.name) + " Station"} delay={delay} selected={selectedSt ? (selectedSt.code == card.code) : false} setSelect={() => {statClick(card); setEditing(false)}} connections={card.connected} getAll={getAllStations} resetter={resetSelected} />
                   } )
                   }
 

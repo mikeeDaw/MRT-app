@@ -12,7 +12,7 @@ const stationSchema = new Schema({
 export const StationModel = mongoose.model('Station', stationSchema);
 
 export const getStations = () => StationModel.find();
-export const getStationByName = (code:String) => StationModel.findOne({code});
+export const getStationByCode = (code:String) => StationModel.findOne({code});
 export const createStation = (values: Record<string,any>) => new StationModel(values).save().then((user) => user.toObject());
-export const deleteStationByName = (name: String) => StationModel.findOneAndDelete({name})
+export const deleteStationByCode = (code: String) => StationModel.findOneAndDelete({code})
 export const updateStationByCode = (iCode: String, values: Record<string, any>) => StationModel.findOneAndUpdate({code:iCode},values, {new: true}); 
