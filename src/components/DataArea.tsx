@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import UserSide from "./UserSide";
 import AdminLog from "./AdminLog";
+import { TapMethod } from "./context/Context";
 
 interface Props {
   setTabAdmin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,15 +9,18 @@ interface Props {
 }
 
 const DataArea: React.FC<Props> = ({ setTabAdmin, tabAdmin }) => {
+
+  const tapMeth = useContext(TapMethod)
+
   const generateTabContent = () => {
     if (tabAdmin) return <AdminLog />;
-    else return <UserSide />;
+    else return <UserSide currStat={tapMeth.currStation} />;
   };
 
   return (
     <>
       <div
-        className="absolute bg-white z-10 sm:right-0 md:right-14 md:w-[350px] lg:right-28 xl:right-44 pt-5 md:top-44 flex flex-col lg:w-96 border rounded-lg"
+        className="absolute bg-white z-10 sm:right-0 md:right-14 md:w-[350px] lg:right-28 xl:right-44 pt-5 md:top-1/2 md:translate-y-[50%] flex flex-col lg:w-96 border rounded-lg"
         style={{ boxShadow: "0 0 13px 2px #b3b3b3" }}
       >
         <div className="bg-slate-400 flex flex-row pt-2 ps-2 gap-1">

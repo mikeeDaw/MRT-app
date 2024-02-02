@@ -24,8 +24,8 @@ code {
   position: absolute;
   transform: rotate(37deg);
   width: 27px;
-  left: -115px;
-  top: -60px;
+  left: -125px;
+  top: -40px;
   opacity: 1;
   @apply border-b-2 border-slate-500;
   z-index: 50;
@@ -38,7 +38,7 @@ code {
   width: 27px;
   left: 86px;
   bottom: -23px;
-  @apply border-b-2 border-slate-500;
+  @apply border-b-2 border-[#0E137D];
 }
 
 .marker-label:hover {

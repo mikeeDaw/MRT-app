@@ -1,6 +1,5 @@
 import express from 'express';
 import { createStation, getStations, updateStationByCode, getStationByCode, StationModel, deleteStationByCode } from '../models/stationModel';
-
 export const makeStation = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
     const {name, code, connected, coordinates} = req.body;

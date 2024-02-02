@@ -1,9 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, createContext } from 'react'
 import { Stations, DataArea } from '../components';
 // import authCxt from '../components/context/AuthContext';
 import Leaflet, { LatLngExpression, latLng } from "leaflet";
 import {Middleware} from '../middleware/Middleware'
 import { useParams } from 'react-router-dom';
+import {TapMethod}  from '../components/context/Context';
+import { StationMod } from '../components/types/models';
+import { useNavigate } from 'react-router-dom';
 const endpoint = process.env.REACT_APP_URL
 
 const Home = () => {
@@ -11,9 +14,9 @@ const Home = () => {
     const [tabAdmin, setTabAdmin] = useState(false)
     const [allStations, setAllStations] = useState<any>([])
     const [polyLine, setPolyLine] = useState<LatLngExpression[][]>([])
-
+    const nav = useNavigate()
     const pars = useParams()
-    const {getToken} = Middleware()
+    const {getToken} = Middleware(pars.station!)
 
     const getTheStations = async () => {
       const response = await fetch(`${endpoint}/station/get/all`, {
@@ -25,6 +28,10 @@ const Home = () => {
           if(jason.status === 200){
               const data = await jason.json()
               setAllStations(data)
+
+              if(!(data.find((stat:StationMod) => stat.name == pars.station?.toUpperCase()))){
+                nav('/error')
+              }
   
           } else {
               console.log('Error');
@@ -52,12 +59,13 @@ const Home = () => {
     setPolyLine(poly)
   }, [allStations])
 
-  console.log(pars)
   return (
+    <TapMethod.Provider value={{currStation: pars.station!, pass: pars.pass!}}>
     <div className='relative'>
-        <Stations allStations={allStations} polyLine={polyLine} />
+        <Stations allStations={allStations} polyLine={polyLine} currStation={pars.station!} />
         <DataArea setTabAdmin={setTabAdmin} tabAdmin={tabAdmin} />
     </div>
+    </TapMethod.Provider>
 
   )
 }

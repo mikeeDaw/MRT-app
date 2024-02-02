@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { Home, AdminDash } from "./pages";
 import { createBrowserRouter, RouterProvider, Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import PrivateRoute from "./components/route/PrivateRoute";
-import authCxt from "./components/context/AuthContext";
+import {authCxt} from "./components/context/Context";
 
 
 

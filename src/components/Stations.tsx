@@ -1,61 +1,19 @@
 import Leaflet, { LatLngExpression, latLng } from "leaflet";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
+import { TapMethod } from "./context/Context";
 import { Red } from "../icons";
 import Map from './Map'
 const endpoint = process.env.REACT_APP_URL
 
 interface Props {
   allStations : any[],
-  polyLine : LatLngExpression[][]
+  polyLine : LatLngExpression[][],
+  currStation : string
 }
 
-
-
-const Stations : React.FC<Props> = ({allStations, polyLine}) => {
+const Stations : React.FC<Props> = ({allStations, polyLine, currStation}) => {
   // x , y
-
-  // const [allStations, setAllStations] = useState<any>([])
-  // const [polyLine, setPolyLine] = useState<LatLngExpression[][]>()
-
-  // const getTheStations = async () => {
-  //   const response = await fetch(`${endpoint}/station/get/all`, {
-  //     method: 'GET',
-  //     headers: {
-  //         "Content-Type": 'application/json',
-  //     },
-  //   }).then(async (jason) => {
-  //       if(jason.status === 200){
-  //           const data = await jason.json()
-  //           setAllStations(data)
-
-            
-
-  //       } else {
-  //           console.log('Error');
-  //       }
-  //   }).catch((error) => {
-  //       console.log(error.message)
-  //   })
-  // }
-
-  // useEffect(()=>{
-  //   getTheStations();
-  // },[])
-
-  // // For polyline
-  // useEffect(()=>{
-  //   let poly:any[] = []
-  //   allStations.forEach((station:any) => {
-  //     station.connected.forEach((code: String) => {
-  //       let connect:any[] = [Leaflet.latLng(station.coordinates.x,station.coordinates.y)]
-  //       let conStat = allStations.find((item:any) => item.code == code)
-  //       connect.push(Leaflet.latLng(conStat.coordinates.x,conStat.coordinates.y))
-  //       poly.push(connect)
-  //     })
-  //   })
-  //   setPolyLine(poly)
-  // }, [allStations])
 
   const titleCase = (inputString:String) => {
       return inputString.replace(/\w\S*/g, (word) => {
@@ -63,54 +21,9 @@ const Stations : React.FC<Props> = ({allStations, polyLine}) => {
     });
   }
 
-  // const polyline: LatLngExpression[][] = [
-  //   [Leaflet.latLng(14.65617, 121.028032), Leaflet.latLng(14.6428, 121.0345)],
-  //   [
-  //     Leaflet.latLng(14.6428, 121.0345),
-  //     Leaflet.latLng(14.6344174623, 121.039349843),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.6344174623, 121.039349843),
-  //     Leaflet.latLng(14.6183225267, 121.050621464),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.6183225267, 121.050621464),
-  //     Leaflet.latLng(14.6046242482, 121.053864785),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.6046242482, 121.053864785),
-  //     Leaflet.latLng(14.5860943223, 121.054023117),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.5860943223, 121.054023117),
-  //     Leaflet.latLng(14.575502698, 121.052208124),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.575502698, 121.052208124),
-  //     Leaflet.latLng(14.5718, 121.0481),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.5718, 121.0481),
-  //     Leaflet.latLng(14.5667810662, 121.040613171),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.5667810662, 121.040613171),
-  //     Leaflet.latLng(14.5525194566, 121.033789865),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.5525194566, 121.033789865),
-  //     Leaflet.latLng(14.5426961625, 121.023269907),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.5426961625, 121.023269907),
-  //     Leaflet.latLng(14.5384028464, 121.018206594),
-  //   ],
-  //   [
-  //     Leaflet.latLng(14.5384028464, 121.018206594),
-  //     Leaflet.latLng(14.53584119, 121.00084333),
-  //   ],
-  // ];
-  const LineOpts = { color: "#0E137D", weight: 5 };
+  const tapMeth = useContext(TapMethod)
+  
+  const LineOpts = { color: "#0E137D", weight: 7 };
   let markKey = 0;
   
 
@@ -132,22 +45,43 @@ const Stations : React.FC<Props> = ({allStations, polyLine}) => {
           allStations.map((station:any)=> {
             let coords = station.coordinates
             markKey+=1;
+            // console.log(station.name, currStation.toUpperCase())]
+
             return (
               <>
-              <Marker key={markKey} position={[coords.x, coords.y]}>
-                <Popup>
-                  A pretty CSS3 spopup. <br /> {titleCase(station.name)}
-                </Popup>
-              </Marker>
+
+              {
+                (station.name == currStation.toUpperCase()) ? (
+                  <>
+                  <Marker key={markKey} position={[coords.x, coords.y]}
+                  icon={Leaflet.divIcon({
+                    className: "bg-none",
+                    html: `<div class="bg-[#d0ff1d] rounded-full p-3 border-4 border-[#0E137D] translate-x-[-30%] translate-y-[-25%] relative z-10"> </div>`
+                  })}
+                  />
+                  </>
+                  
+                ) : (
+                  <>
+                  <Marker key={markKey} position={[coords.x, coords.y]}
+                  icon={Leaflet.divIcon({
+                    className: "bg-none",
+                    html: `<div class="bg-[#0ed5aa] rounded-full p-2.5 border-4 border-[#0E137D] translate-x-[-30%] translate-y-[-25%] relative z-10"> </div>`
+                  })}
+                  />
+                  </>
+                )
+              }
 
               <Marker
                 key={Number('86'+String(markKey))}
                 position={[coords.x, coords.y]}
                 icon={Leaflet.divIcon({
                   className: "marker-label",
-                  html: `<span class="border-2 border-slate-500 py-0.5 w-[95px] block text-center bg-indigo-100 font-bold rounded-lg tracking-wide markLbl" > ${titleCase(station.name)} </span>`
+                  html: `<span class="border-2 border-[#0E137D] py-0.5 w-[95px] block text-center bg-indigo-100 font-bold rounded-lg tracking-wide markLbl" > ${titleCase(station.name)} </span>`
                 })}
               />  
+
               </>
             )
           })

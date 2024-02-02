@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import SettingItem from './SettingItem'
 import { Middleware } from '../../../middleware/Middleware'
+import { ToastContainer, toast } from 'react-toastify'
 const endpoint = process.env.REACT_APP_URL
 
 const Settings = () => {
@@ -54,24 +55,48 @@ const Settings = () => {
 
     const updBody = { penalty: penalty, minFare: minFare, farePerKM: perKM, minLoad: minLoad };
 
-    const response = await fetch(`${endpoint}/constants/edit`, {
-      method: 'PATCH',
-      headers: {
-        "Content-Type": 'application/json',
-        'Authorization': getToken()
-      },
-      body: JSON.stringify(updBody)
-    })
-    .then(async (jason) => {
+    if(penalty == 0 || minFare == 0 || perKM == 0 || minLoad == 0){
+      toast.error(`Invalid Input.`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else {
+      const response = await fetch(`${endpoint}/constants/edit`, {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": 'application/json',
+          'Authorization': getToken()
+        },
+        body: JSON.stringify(updBody)
+      })
+      .then(async (jason) => {
+  
+        if(jason.status === 200) {
+          const data = await jason.json()
+          setEditing(false);
+  
+          toast.success(`Update was Successful!`, {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+  
+        } else {
+          console.log('Error');
+          logout()
+        }
+      })
+    }
 
-      if(jason.status === 200) {
-        const data = await jason.json()
-        setEditing(false);
-      } else {
-        console.log('Error');
-        logout()
-      }
-    })
 
   }
 
@@ -87,6 +112,9 @@ const Settings = () => {
   
   return (
     <>
+    <div className='absolute left-10'>
+        <ToastContainer className="" stacked />
+    </div>
     <div className='flex bg-slate-300 h-full p-6'>
         <div className='w-5/12 lg:w-4/12 bg-white h-fit px-4 py-6 rounded-lg flex flex-col gap-5'>
           <div className='flex justify-between px-1 relative'>

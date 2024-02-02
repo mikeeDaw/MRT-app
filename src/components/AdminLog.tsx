@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import InputField from './InputField'
 import { Navigate, useNavigate } from 'react-router';
 import {Middleware, isLogged} from '../middleware/Middleware';
+import { TapMethod } from './context/Context';
 const endpoint = process.env.REACT_APP_URL
 
 const AdminLog = () => {
@@ -11,7 +12,8 @@ const AdminLog = () => {
     const [usernameErr, setUsernameErr] = useState(false);
     const [passErr, setPassErr] = useState(false);
     const nav = useNavigate();
-    const {login} = Middleware()
+    const tapMeth = useContext(TapMethod)
+    const {login} = Middleware(tapMeth.currStation)
     const auth = isLogged()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

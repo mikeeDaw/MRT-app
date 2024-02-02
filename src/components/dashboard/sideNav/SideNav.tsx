@@ -32,7 +32,7 @@ const SideNav : React.FC<Props> = ({setTab}) => {
           </div>
           <div className='flex flex-col gap-3 border-t border-[#58ECC2] w-full items-center pt-3'>
             <Tabs pic={Settings} location={''} selected={selected('Settings')} description={'Management'} handleClick={() => {setTab('Settings'); setActiveIcon('Settings')}} />
-            <Tabs pic={Logout} location={'/'} description={'Log Out'} handleClick={logout} />
+            <Tabs pic={Logout} location={'/ayala/in'} description={'Log Out'} handleClick={logout} />
           </div>
 
         </div>

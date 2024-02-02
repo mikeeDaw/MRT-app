@@ -5,6 +5,7 @@ import Beepcard from './Beepcard'
 import {Middleware} from '../../middleware/Middleware'
 import { AnimatePresence, motion } from 'framer-motion'
 import { cardList, cardData } from '../../constants/animate'
+import { ToastContainer, toast } from 'react-toastify'
 const endpoint = process.env.REACT_APP_URL
 
 const Cards = () => {
@@ -36,6 +37,17 @@ const Cards = () => {
                 setSelectedCard(data)
                 setSelect(true)
                 setCards([data, ...cards])
+
+                toast.success(`Card ${data.uid} was Created!`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
+
             } else {
                 console.log('Error');
                 logout()
@@ -60,6 +72,7 @@ const Cards = () => {
             if(jason.status === 200){
                 const data = await jason.json()
                 setCards(data)
+                
             } else {
                 console.log('Error');
                 logout()
@@ -74,7 +87,7 @@ const Cards = () => {
     const loadBeep = async () => {
 
         const updBody = {uid: selectedCard.uid, load: Number(load)}
-
+        
         const response = await fetch('http://localhost:4000/beep/load', {
             method: 'PATCH',
             headers: {
@@ -88,9 +101,30 @@ const Cards = () => {
                 console.log('Updated:',data)
                 setSelectedCard(data)
                 setTrackChanges(trackChanges+1)
+                setLoad(0)
+
+                toast.success(`Successfully loaded Php ${updBody.load} to the card!`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
+            } else if (jason.status === 401){
+                toast.error(`Invalid amount.`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
             } else {
                 console.log('Error');
-                logout()
+                //logout()
             }
         }).catch((error) => {
             console.log(error.message)
@@ -119,6 +153,16 @@ const Cards = () => {
                 )
                 setSelect(false)
                 setSelectedCard({})
+
+                toast.success(`Card ${data.uid} was successfully Deleted!`, {
+                    position: "top-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
             } else {
                 console.log('Error');
                 logout()
@@ -183,7 +227,7 @@ const Cards = () => {
                                 delay+=0.12; 
                                 return (
                                 <AnimatePresence>
-                                <motion.div key={elem.uid} initial={{y:-30,opacity:0}} animate={{y:0,opacity:1, transition: {type:'spring',bounce:0.4,delay:delay, duration: 0.7} }} exit={{x:-10, opacity:0}} className='w-full flex justify-center'>        
+                                <motion.div key={elem.uid} initial={{y:-30,opacity:0}} animate={{y:0,opacity:1, transition: {type:'spring',bounce:0.4,delay:delay, duration: 0.7} }} className='w-full flex justify-center'>        
                                     <Beepcard uid={elem.uid} key={Number(elem.uid)} selected={selectedCard.uid == elem.uid} handleClick={() => {cardClick(elem)}} /> 
                                 </motion.div>
                                 </AnimatePresence>
@@ -197,6 +241,10 @@ const Cards = () => {
 
 
             </motion.div>
+
+            <div className='absolute left-10'>
+                <ToastContainer className="" stacked />
+            </div>
 
             {/* Middle Area */}
             <div className='w-1/2 h-full flex flex-col items-center justify-center relative pt-3'>

@@ -2,7 +2,11 @@ import React from 'react'
 import DataField from './DataField'
 import {Wallet, Pay, Beep} from '../icons'
 
-const UserSide = () => {
+interface Props {
+    currStat : string
+}
+
+const UserSide: React.FC<Props> = ({currStat}) => {
 
   return (
         <div
@@ -23,7 +27,7 @@ const UserSide = () => {
             <div className='bg-cyan-300 mb-3 flex items-center py-3 px-5' style={{backgroundImage: "linear-gradient(45deg, #1a9d49, transparent)"}}>
                 <div className='flex flex-col'>
                     <span className='text-white text-sm'> You are in: </span>
-                    <span className='text-white text-xl font-bold'> ORTIGAS STATION </span>
+                    <span className='text-white text-xl font-bold'> {currStat.toUpperCase()} STATION </span>
                 </div>
             </div>
 

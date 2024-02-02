@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React,{useContext, useEffect, useState} from 'react'
 import { Map, MapEvents, InputField } from '..';
 import { Marker, Popup, Polygon, useMapEvents } from "react-leaflet";
 import Leaflet, {LatLngExpression} from 'leaflet'
@@ -9,13 +9,14 @@ import { introPage } from '../../constants/animate';
 import { StationMod } from '../types/models';
 import { connected } from 'process';
 import { ToastContainer, toast } from 'react-toastify';
+import { TapMethod } from '../context/Context';
 import 'react-toastify/dist/ReactToastify.css';
 
 const endpoint = process.env.REACT_APP_URL
 
 const AddStation = () => {
-
-    const {getToken} = Middleware()
+    const tapMeth = useContext(TapMethod)
+    const {getToken} = Middleware(tapMeth.currStation)
 
     const LineOpts = { color: "#0E137D", weight: 5 };
   
@@ -241,9 +242,9 @@ const AddStation = () => {
           <div className='max-h-[270px] overflow-y-scroll scrollbar-hide'>
             <div className="flex gap-3 mt-4 h-[44px]">
               
-              <InputField forImg={false} textIcon="X" placeholder="12.54704" inpValue={String(longitude)} setter={xChange} />
+              <InputField forImg={false} textIcon="X" placeholder="12.54704" inpValue={String(longitude)} setter={xChange} onlyRead={true}/>
 
-              <InputField forImg={false} textIcon="Y" placeholder="14.5643" inpValue={String(latitude)} setter={yChange} />
+              <InputField forImg={false} textIcon="Y" placeholder="14.5643" inpValue={String(latitude)} setter={yChange} onlyRead={true}/>
 
             </div>
             

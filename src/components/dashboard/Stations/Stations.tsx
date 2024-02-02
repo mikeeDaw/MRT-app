@@ -56,36 +56,94 @@ const Stations = () => {
 
       const removed = oldConnect?.filter((item) => !connects.includes(item))
       const added = connects.filter((item) => !oldConnect?.includes(item) )
-      const stayed = oldConnect?.filter((item) => connects.includes(item))
+      const stayed = oldConnect!.filter((item) => connects.includes(item))
+      let errorFlag = false;
 
-      const response = await fetch(`${endpoint}/station/updateStat`, {
-        method: 'PATCH',
-        headers: {
-            "Content-Type": 'application/json',
-            "Authorization": getToken()
-        },
-        body: JSON.stringify({origCode: selectedSt?.code, code: sCode, name:name, connRem: removed, connAdd: added,connStay: stayed, coordinates: {x:xCoord,y:yCoord}})
-      }).then(async (jason) => {
-          if(jason.status === 200){
-              const data = await jason.json()
-              setOldConnect(data.connected)
-              console.log('UPDATED:',data)
-              toast.success(`${titleCase(data.name)} Station was Updated!`, {
-                position: "top-left",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-          } else {
-              console.log('Error');
-          }
-      }).catch((error) => {
-          console.log(error.message)
+
+      stayed!.forEach((code) => {
+        let targetStation = stationCard.find((statObj) => statObj.code == code)
+        let distance = Leaflet.latLng(Number(xCoord),Number(yCoord)).distanceTo(Leaflet.latLng(Number(targetStation?.coordinates.x), Number(targetStation?.coordinates.y)))
+        console.log(targetStation, distance, xCoord, yCoord)
+
+        if(distance < 500){
+          toast.error(`Too close to Connections!`, {
+            position: "top-left",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          errorFlag = true
+        }
       })
-      getAllStations()
+
+      added!.forEach((code) => {
+        let targetStation = stationCard.find((statObj) => statObj.code == code)
+        let distance = Leaflet.latLng(Number(xCoord),Number(yCoord)).distanceTo(Leaflet.latLng(Number(targetStation?.coordinates.x), Number(targetStation?.coordinates.y)))
+        console.log(targetStation, distance, xCoord, yCoord)
+
+        if(distance < 500){
+          toast.error(`Too close to Connections!`, {
+            position: "top-left",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          errorFlag = true
+        }
+      })
+
+      if(errorFlag) { return }
+
+      if(name == '' || isNaN(xCoord) || isNaN(yCoord) || yCoord == 0 || xCoord == 0){
+        toast.error(`Invalid Input`, {
+          position: "top-left",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setXCoord(Number(selectedSt?.coordinates.x))
+        setYCoord(Number(selectedSt?.coordinates.y))
+        setName(String(selectedSt?.name))
+      } else {
+        const response = await fetch(`${endpoint}/station/updateStat`, {
+          method: 'PATCH',
+          headers: {
+              "Content-Type": 'application/json',
+              "Authorization": getToken()
+          },
+          body: JSON.stringify({origCode: selectedSt?.code, code: sCode, name:name.toUpperCase(), connRem: removed, connAdd: added,connStay: stayed, coordinates: {x:xCoord,y:yCoord}})
+        }).then(async (jason) => {
+            if(jason.status === 200){
+                const data = await jason.json()
+                setOldConnect(data.connected)
+                console.log('UPDATED:',data)
+                toast.success(`${titleCase(data.name)} Station was Updated!`, {
+                  position: "top-left",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
+            } else {
+                console.log('Error');
+            }
+        }).catch((error) => {
+            console.log(error.message)
+        })
+        getAllStations()
+      }
+
       setEditing(false);
     }
 
@@ -116,7 +174,21 @@ const Stations = () => {
         return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
   });
   }
-  
+
+  const xChange = (e: any) => {
+    const re = /^[0-9.\b]+$/;
+    const value = e.target.value
+    if(value === '' || re.test(value)){
+      setXCoord(value)
+    }
+  }
+  const yChange = (e: any) => {
+    const re = /^[0-9.\b]+$/;
+    const value = e.target.value
+    if(value === '' || re.test(value)){
+      setYCoord(value)
+    }
+  }
   const stationSelect = (station:StationMod) => {
     setName(String(station.name))
     setScode(String(station.code))
@@ -226,7 +298,7 @@ const Stations = () => {
               <div className='flex flex-col justify-center h-full relative'>
 
                 <span className='text-sm font-bold'> Station Name</span>
-                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 me-10 focus:border-none editInp mb-3' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={name ? titleCase(name) : '- Select a Station -' } disabled={!editing} onChange={(e) => {
+                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 me-10 focus:border-none editInp mb-3' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={name ? titleCase(name) : (editing ? '' : '- Select a Station -') } disabled={!editing} onChange={(e) => {
                   setName(e.target.value) }} />
 
                 <span className='text-sm font-bold'> Station Code </span>
@@ -237,13 +309,13 @@ const Stations = () => {
                 <div className='flex w-full ps-1 pe-6 gap-3'>
                   <div className='flex items-center w-1/2 gap-2'>
                     <span className=''> X </span>
-                    <input className='bg-transparent w-full p-0 text-sm text-slate-500 focus:border-none mb-1 editInp px-2' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={xCoord ? xCoord : '- N/A -'} disabled={!editing} onChange={(e) => {
-                  setXCoord(Number(e.target.value)) }} />
+                    <input className='bg-transparent w-full p-0 text-sm text-slate-500 focus:border-none mb-1 editInp px-2' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={xCoord ? xCoord : (editing ? '':'- N/A -')} disabled={!editing} onChange={(e) => {
+                  xChange(e) }} />
                   </div>
                   <div className='flex items-center w-1/2 gap-2'>
                     <span> Y </span>
-                    <input className='bg-transparent w-full p-0 text-sm text-slate-500 focus:border-none editInp mb-1 px-2' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={yCoord ? yCoord : '- N/A -'} disabled={!editing}  onChange={(e) => {
-                  setYCoord(Number(e.target.value)) }} />
+                    <input className='bg-transparent w-full p-0 text-sm text-slate-500 focus:border-none editInp mb-1 px-2' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={yCoord ? yCoord : (editing ? '':'- N/A -')} disabled={!editing}  onChange={(e) => {
+                  yChange(e) }} />
                   </div>
                 </div>
 
