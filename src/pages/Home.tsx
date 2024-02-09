@@ -16,7 +16,6 @@ const Home = () => {
     const [polyLine, setPolyLine] = useState<LatLngExpression[][]>([])
     const nav = useNavigate()
     const pars = useParams()
-    const {getToken} = Middleware(pars.station!)
 
     const getTheStations = async () => {
       const response = await fetch(`${endpoint}/station/get/all`, {
@@ -61,7 +60,7 @@ const Home = () => {
 
   return (
     <TapMethod.Provider value={{currStation: pars.station!, pass: pars.pass!}}>
-    <div className='relative'>
+    <div className='relative w-screen h-screen'>
         <Stations allStations={allStations} polyLine={polyLine} currStation={pars.station!} />
         <DataArea setTabAdmin={setTabAdmin} tabAdmin={tabAdmin} />
     </div>

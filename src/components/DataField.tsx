@@ -2,8 +2,8 @@ import { title } from 'process'
 import React from 'react'
 
 interface Props {
-    title : String,
-    data : String,
+    title : string,
+    data : string,
     icon : any
 }
 

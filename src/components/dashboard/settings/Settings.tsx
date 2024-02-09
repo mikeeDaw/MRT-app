@@ -25,7 +25,6 @@ const Settings = () => {
         method: 'GET',
         headers: {
           "Content-Type": 'application/json',
-          'Authorization': getToken()
         },
       })
       .then(async (jason) => {

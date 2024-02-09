@@ -1,5 +1,5 @@
 import express from 'express';
-import { createCard, getCardByUID, getCards, deleteCardById, LoadCardById } from '../models/CardModel';
+import { createCard, getCardByUID, getCards, deleteCardById, LoadCardById, UpdateCardById } from '../models/CardModel';
 import { getConstById } from '../models/ConstantModel';
 
 export const generateCard = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -12,7 +12,7 @@ export const generateCard = async (req: express.Request, res: express.Response, 
     }
     const constDocu = await getConstById('Constant');
     
-    const newCard = await createCard({uid: UID, balance: constDocu!.minLoad})
+    const newCard = await createCard({uid: UID, balance: constDocu!.minLoad, tapped: false, origin: ""})
     res.status(200).json(newCard)
 }
 
@@ -50,6 +50,22 @@ export const deleteCard = async (req: express.Request, res: express.Response, ne
     }
 }
 
+export const getOneCard = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    let uid = req.body.uid
+    try{
+        const card = await getCardByUID(uid)
+        console.log(card)
+        if(card){
+            res.status(200).json(card)
+        } else {
+            res.status(400).json({msg: "Card not Found"})
+        }
+        
+    } catch(err) {
+        res.status(400).json({msg: "Card not Found"})
+    }
+}
+
 export const updateLoad = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
     let uid = req.body.uid;
@@ -79,7 +95,17 @@ export const updateLoad = async (req: express.Request, res: express.Response, ne
             console.log('in outer catch:',err.message)
         }
     }
+}
 
+export const TapInCard = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const uid = req.body.uid
+    const orig = req.body.origin
+    console.log(uid,orig)
 
-
+    try {
+        const updated = await UpdateCardById(uid,{tapped: true, origin: orig})
+        res.status(200).json(updated)
+    } catch (error) {
+        res.status(400).json({msg: "Error In Tapping In."})
+    }
 }

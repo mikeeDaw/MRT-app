@@ -1,7 +1,7 @@
 import express, { response } from 'express';
 import { adminModel } from '../models';
 import { login, register, isAuthenticated } from "../controller/authentication";
-import { generateCard, getAllCards, deleteCard, updateLoad } from '../controller/beepCard';
+import { generateCard, getAllCards, deleteCard, updateLoad, getOneCard, TapInCard } from '../controller/beepCard';
 import { makeStation, getAllStations, updateStation, delStation } from '../controller/trainStation';
 import { getConstant, updConstDocu } from '../controller/constants';
 
@@ -39,9 +39,12 @@ router.post('/authVerify/xd', isAuthenticated, (req, res) => {
 
 // Card Operations
 router.post('/beep/generate',isAuthenticated, generateCard)
+router.post('/beep/getOne', getOneCard)
 router.get('/beep/fetchAll',isAuthenticated, getAllCards)
 router.delete('/beep/deleteCard', isAuthenticated, deleteCard )
 router.patch('/beep/load', isAuthenticated, updateLoad)
+router.patch('/beep/tapIn', TapInCard)
+
 
 // Station Operations
 router.post('/station/add', isAuthenticated, makeStation)
@@ -50,7 +53,7 @@ router.patch('/station/updateStat', isAuthenticated, updateStation)
 router.delete('/station/deleteMe', isAuthenticated, delStation )
 
 // Constant Operations
-router.get('/constants/get', isAuthenticated, getConstant )
+router.get('/constants/get', getConstant )
 router.patch('/constants/edit', isAuthenticated, updConstDocu)
 
 
