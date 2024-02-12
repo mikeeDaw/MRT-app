@@ -282,8 +282,34 @@ const Cards = () => {
                                 </div>
                             </div>
 
-                            <div className='bg-green-100 h-2/4 rounded-b-xl p-4'>
-                                Transactions
+                            <div className='bg-green-100 h-2/4 rounded-b-xl p-4 flex flex-col gap-2'>
+                                <span> Transactions </span>
+                                <div className='flex flex-col gap-2 overflow-y-scroll scrollbar-hide'>
+                                {
+                                    selectedCard.transactions.toReversed().map((record:any) => {
+                                        return (
+                                            <div className='flex bg-white py-2 px-3 rounded-lg justify-between items-center'>
+                                                <span className='text-xs flex flex-col'>
+                                                    <span className='font-bold'>{record.desc}</span>
+                                                    <span className=''>{new Date(record.date).toLocaleDateString("en-US",
+                                                            {
+                                                                year: "numeric",
+                                                                month: "numeric",
+                                                                day: "numeric",
+                                                            })
+                                                        }</span>
+                                                </span>
+                                                <span className={'pe-2 font-bold ' + (record.desc.search("Load") === -1 ? 'text-[#ff1d1d]' : 'text-[#16c33b]')}>
+                                                    {
+                                                        (record.desc.search("Load") === -1 ? `-₱ ${record.amount}` : `+₱ ${record.amount}`)
+                                                    }
+                                                </span>
+                                            </div>
+                                        )
+                                    })
+                                }
+                                </div>
+
                             </div>
                         </div>
                     ) : (

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createCard, getCardByUID, getCards, deleteCardById, LoadCardById, UpdateCardById } from '../models/CardModel';
+import { createCard, getCardByUID, getCards, deleteCardById, LoadCardById, UpdateCardById, cardModel } from '../models/CardModel';
 import { getConstById } from '../models/ConstantModel';
 
 export const generateCard = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -12,7 +12,7 @@ export const generateCard = async (req: express.Request, res: express.Response, 
     }
     const constDocu = await getConstById('Constant');
     
-    const newCard = await createCard({uid: UID, balance: constDocu!.minLoad, tapped: false, origin: ""})
+    const newCard = await createCard({uid: UID, balance: constDocu!.minLoad, tapped: false, origin: "",transactions:[]})
     res.status(200).json(newCard)
 }
 
@@ -84,6 +84,12 @@ export const updateLoad = async (req: express.Request, res: express.Response, ne
             }
     
             try{
+                const currDate = new Date()
+                await cardModel.updateOne({uid: uid}, {
+                    $push : {
+                        transactions: {date: String(currDate), amount: added, desc: "Loaded Card"}
+                    }
+                })
                 const updated = await LoadCardById(uid,{balance: card!.balance + added});
                 res.status(200).json(updated);
             } catch (err) {
@@ -108,4 +114,27 @@ export const TapInCard = async (req: express.Request, res: express.Response, nex
     } catch (error) {
         res.status(400).json({msg: "Error In Tapping In."})
     }
+}
+
+export const TapOutCard = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const uid = req.body.uid
+    const currentBal = Number(req.body.balance)
+    const totalFare = Number(req.body.price)
+    const descr = req.body.desc
+    const currDate = new Date()
+    console.log(currDate)
+
+    try {
+        await cardModel.updateOne({uid: uid}, {
+            $push : {
+                transactions: {date: String(currDate), amount: totalFare, desc: descr}
+            }
+        })
+        const updated = await UpdateCardById(uid, {tapped: false, origin:"", balance: currentBal-totalFare })
+        res.status(200).json(updated)
+    } catch(error) {
+        res.status(400).json({msg: error})
+    }
+   
+
 }

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, createContext } from 'react'
+import React, { useState, useContext, useEffect, createContext, ReactElement } from 'react'
 import { Stations, DataArea } from '../components';
 // import authCxt from '../components/context/AuthContext';
 import Leaflet, { LatLngExpression, latLng } from "leaflet";
@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import {TapMethod}  from '../components/context/Context';
 import { StationMod } from '../components/types/models';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 const endpoint = process.env.REACT_APP_URL
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
     const [tabAdmin, setTabAdmin] = useState(false)
     const [allStations, setAllStations] = useState<any>([])
     const [polyLine, setPolyLine] = useState<LatLngExpression[][]>([])
+    const [polyLin, setPolyLin] = useState<LatLngExpression[][]>([])
     const nav = useNavigate()
     const pars = useParams()
 
@@ -42,6 +44,9 @@ const Home = () => {
 
     useEffect(() => {
       getTheStations()
+      if(pars.pass?.toLowerCase() !=='in' && pars.pass?.toLowerCase() !== 'out') {
+        nav('/error')
+      }
     }, [])
 
   // For polyline
@@ -61,13 +66,17 @@ const Home = () => {
   return (
     <TapMethod.Provider value={{currStation: pars.station!, pass: pars.pass!}}>
     <div className='relative w-screen h-screen'>
-        <Stations allStations={allStations} polyLine={polyLine} currStation={pars.station!} />
-        <DataArea setTabAdmin={setTabAdmin} tabAdmin={tabAdmin} />
+        <div className='absolute'>
+            <ToastContainer className="" stacked />
+        </div>
+        <Stations allStations={allStations} polyLine={polyLine} routePoly={polyLin} currStation={pars.station!} />
+        <DataArea allStations={allStations} setTabAdmin={setTabAdmin} setRoutePoly={setPolyLin} tabAdmin={tabAdmin} />
     </div>
     </TapMethod.Provider>
 
   )
 }
+
 //14.5860943223 121.054023117 - ortigas
 // 14.591570, 121.031310 - Shaw
 // 14.576730, 121.034740 - Boni

@@ -6,7 +6,7 @@ const PrivateRoute = () => {
   // const {auth} = useContext(authCxt);
   const auth = isLogged()
   return (
-     auth ? <Outlet /> : <Navigate to='/'/> 
+     auth ? <Outlet /> : <Navigate to='/ayala/in'/> 
   )
 }
 

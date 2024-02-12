@@ -1,7 +1,7 @@
 import express, { response } from 'express';
 import { adminModel } from '../models';
 import { login, register, isAuthenticated } from "../controller/authentication";
-import { generateCard, getAllCards, deleteCard, updateLoad, getOneCard, TapInCard } from '../controller/beepCard';
+import { generateCard, getAllCards, deleteCard, updateLoad, getOneCard, TapInCard, TapOutCard } from '../controller/beepCard';
 import { makeStation, getAllStations, updateStation, delStation } from '../controller/trainStation';
 import { getConstant, updConstDocu } from '../controller/constants';
 
@@ -44,6 +44,7 @@ router.get('/beep/fetchAll',isAuthenticated, getAllCards)
 router.delete('/beep/deleteCard', isAuthenticated, deleteCard )
 router.patch('/beep/load', isAuthenticated, updateLoad)
 router.patch('/beep/tapIn', TapInCard)
+router.patch('/beep/tapOut', TapOutCard)
 
 
 // Station Operations

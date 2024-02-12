@@ -9,7 +9,7 @@ const TOKEN_KEY = 'MRT-SESH';
 
 export const isLogged = () => (localStorage.getItem(TOKEN_KEY) ? true : false)
 
-export const Middleware = (station?: string) => {
+export const Middleware = (station?: string, pass?:string) => {
  
   const nav = useNavigate()
   
@@ -32,7 +32,7 @@ export const Middleware = (station?: string) => {
                   localStorage.clear()
                   console.log('if on try')
                   setIsTokenExpired(true); // Set the state variable when the token is expired
-                  nav(`/${station ?? 'ayala'}/in`); // Redirect to login page if the token has expired
+                  nav(`/${station ?? 'ayala'}/${pass ?? 'in'}`); // Redirect to login page if the token has expired
                   return;
               } else {
                   setIsTokenValid(true);
@@ -42,12 +42,12 @@ export const Middleware = (station?: string) => {
               localStorage.clear()
               console.log('if on catch')
               setIsTokenInvalid(true); // Set the state variable if the token is not valid
-              nav(`/${station ?? 'ayala'}/in`); // Redirect to login page if the token is not valid
+              nav(`/${station ?? 'ayala'}/${pass ?? 'in'}`); // Redirect to login page if the token is not valid
           }
       } else {
         console.log('if on outer if')
         localStorage.clear(); //if user is not logged in or no token is present
-        nav(`/${station ?? 'ayala'}/in`);
+        nav(`/${station ?? 'ayala'}/${pass ?? 'in'}`);
         
       }
   }, [nav, TOKEN_KEY]);
@@ -60,7 +60,7 @@ export const Middleware = (station?: string) => {
     const logout = () => {
       localStorage.removeItem(TOKEN_KEY);
       setAuth(false)
-      nav(`/${station ?? 'ayala'}/in`);
+      nav(`/${station ?? 'ayala'}/${pass ?? 'in'}`);
     }
 
     const getToken = () => {

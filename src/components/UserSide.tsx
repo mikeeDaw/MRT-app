@@ -1,26 +1,38 @@
+import Leaflet, { LatLngExpression, latLng } from "leaflet";
 import React, { useContext, useEffect, useState } from 'react'
 import DataField from './DataField'
 import {Wallet, Pay, Beep} from '../icons'
 import { ToastContainer, toast } from 'react-toastify'
-import { CardMod } from './types/models'
+import { CardMod, StationMod } from './types/models'
 import { TapMethod } from './context/Context'
+import { createGraph, findLongestPath, maxPathDistance } from '../constants/pathing'
 const endpoint = process.env.REACT_APP_URL
 
 interface Props {
-    currStat : string
-    tap: string
+    theStation: any[],
+    currStatObj : StationMod,
+    currStat : string,
+    tap: string,
+    setRoutePoly: React.Dispatch<React.SetStateAction<Leaflet.LatLngExpression[][]>>
 }
 
 
-const UserSide: React.FC<Props> = ({currStat, tap}) => {
+const UserSide: React.FC<Props> = ({theStation, currStat, currStatObj ,tap, setRoutePoly}) => {
 
     const [inputVal, setInputVal] = useState<string>("")
     const [cardData, setCardData] = useState<CardMod | undefined>(undefined)
     const [canTap, setCanTap] = useState(false)
     const [fare, setFare] = useState(0)
+    const [minFare, setMinFare] = useState(0)
+    // Prices
+    const [distance, setDistance] = useState<number | undefined>(undefined)
+    const [totalPrice, setTotalPrice] = useState(0)
 
     const submitUID = async (uid:string) => {
         console.log(uid)
+        if(tap == 'in'){
+            
+        }
         const response = await fetch(`${endpoint}/beep/getOne`, {
             method: 'POST',
             headers: {
@@ -32,9 +44,41 @@ const UserSide: React.FC<Props> = ({currStat, tap}) => {
                 const data = await jason.json()
                 setCardData(data)
                 console.log(data)
+                if(tap === 'out') {
+                    if(data.origin != ''){
+                        const grap = createGraph(theStation)
+                        let originStation = theStation.find((item) => item.name.toUpperCase() === data.origin.toUpperCase())  
+                        console.log(originStation)
+                        if(grap){    
+                           let path = findLongestPath(originStation.code, String(currStatObj.code), grap)
+                           console.log("Path:",path)
+                           let distansya = maxPathDistance(path.path, grap)
+                           console.log("Distance:",distansya)
+                           setDistance(Math.floor(distansya))
+                           setTotalPrice(Math.floor(distansya) * fare === 0 ? minFare : Math.floor(distansya) * fare)
+                        
+                           console.log(path)
+                           let poly:any[] = []
+                           path.path.forEach((code, idx) => {
+                            if(idx !== 0){
+                               let prevStation = theStation.find((station) => station.code === path.path[idx-1])
+                               let nextStation = theStation.find((station) => station.code === code)
+                               console.log(prevStation.code,path.path[idx-1], code)
+                               console.log(prevStation, nextStation)
+                               poly.push([Leaflet.latLng(prevStation.coordinates.x,prevStation.coordinates.y), Leaflet.latLng(nextStation.coordinates.x, nextStation.coordinates.y)])
+                            }
+                           })
+                           console.log(poly)
+                           setRoutePoly(poly)
+                           
+                        }
+                        
+                    }
+
+                }
             } else if (jason.status === 400){
                 toast.error(`Card UID Not Found.`, {
-                    position: "top-right",
+                    position: "top-center",
                     autoClose: 2000,
                     hideProgressBar: false,
                     pauseOnHover: false,
@@ -59,6 +103,7 @@ const UserSide: React.FC<Props> = ({currStat, tap}) => {
             if(jason.status === 200){
               const data = await jason.json();
               setFare(data.farePerKM);
+              setMinFare(data.minFare)
             }
           })
         } catch (error : any) {
@@ -76,19 +121,32 @@ const UserSide: React.FC<Props> = ({currStat, tap}) => {
         getFare()
     },[])
     useEffect(() => {
-        if(cardData){
-            if(!cardData.tapped && cardData.origin === "")
-                setCanTap(false) // 'disabled' is false. Can be clicked.
-            else
+        if(tap === 'in'){
+            if(cardData){
+                if(!cardData.tapped && cardData.origin === "")
+                    setCanTap(false) // 'disabled' is false. Can be clicked.
+                else
+                    setCanTap(true)
+            } else {
                 setCanTap(true)
+            }
         } else {
-            setCanTap(true)
-        }
+            if(cardData){
+                if(!cardData.tapped){
+                    setCanTap(true)
+                } else {
+                    setCanTap(false)
+                }
 
+            }
+            
+        } 
     }, [cardData])
+
     useEffect(()=>{
         setCanTap(true) // true = disabled button
         setCardData(undefined)
+        setRoutePoly([])
     }, [inputVal])
 
     const tapIn = async () => {
@@ -105,7 +163,7 @@ const UserSide: React.FC<Props> = ({currStat, tap}) => {
                     setCardData(data)
                     console.log(data)
                     toast.success(`You Have Tapped In!`, {
-                        position: "top-right",
+                        position: "top-center",
                         autoClose: 2000,
                         hideProgressBar: false,
                         closeOnClick: true,
@@ -122,13 +180,68 @@ const UserSide: React.FC<Props> = ({currStat, tap}) => {
         }
     }
 
+    const tapOut = async () => {
+
+        if(!(cardData!.tapped)){
+            toast.error(`User has not Tapped in yet.`, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                pauseOnHover: false,
+                closeOnClick: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+              return
+        } else {
+            if(cardData!.balance < totalPrice) {
+                toast.error(`Insufficient Balance.`, {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    pauseOnHover: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                  return
+            }
+
+            const response = await fetch(`${endpoint}/beep/tapOut`, {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": 'application/json',
+                },
+                body: JSON.stringify({uid:inputVal, desc: `${cardData?.origin.toUpperCase()} - ${currStat.toUpperCase()}`, balance: cardData?.balance, price: totalPrice})
+            }).then(async (jason) => {
+                if(jason.status === 200){
+                    let theUpdated = await jason.json();
+                    setCardData(theUpdated)
+                    console.log(theUpdated)
+                    toast.success(`You have Tapped Out!`, {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        pauseOnHover: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                      });
+                }
+                
+
+            })
+            
+        }
+
+    }
   return (
     <>
-    <div className=''>
-        <ToastContainer className="" stacked />
-    </div>
     <div
-    className='flex flex-col border-2 border-[#202758] py-6 rounded-b-lg'
+    className='flex flex-col border-2 border-[#202758] pt-2 pb-6 rounded-b-lg'
     >
         {/* Search UID */}
         <div className="flex my-4 px-6 relative">
@@ -153,22 +266,42 @@ const UserSide: React.FC<Props> = ({currStat, tap}) => {
             </div>
         </div>
         {/* Card Data */}
-        <div
-        className='flex flex-row gap-3 px-6'
-        >
+        <div className='flex flex-row gap-3 px-6'>
             <div className='w-1/2 flex flex-col gap-2'>
                 <DataField title={"Balance"} data={( cardData ? "₱ " + String(cardData.balance) + ".00" : "₱ ----")} icon={Wallet}/>
                 <DataField title={"Origin"} data={( cardData ? (cardData.origin ? titleCase(cardData.origin) : '---') : "---")} icon={Wallet} />
             </div>
             <div className='w-1/2 flex flex-col gap-2'>
-                <DataField title={"Fare"} data={( fare !== 0 ? '₱ ' + String(fare) + ' /KM' : "---")} icon={Pay}/>
-                <DataField title={"To"} data={(tap !== 'in' ? titleCase(currStat) : '---')} icon={Wallet} />
+                <DataField title={"Fare"} data={ tap === 'in' ? 
+                    (fare !== 0 ? '₱ ' + String(fare) + ' /KM' : "---") : 
+                    (totalPrice !== 0 ?  '₱ '+ String(totalPrice) + ".00" : '₱ ----')    
+                } icon={Pay}/>
+                <DataField title={"To"} data={
+                    (tap !== 'in' ? titleCase(currStat) : '---')
+                } icon={Wallet} />
             </div>
         </div>
 
+        {
+            tap === 'out' && (
+            <div className='flex flex-row gap-3 px-6 mt-2'>
+                <div className='w-1/2 flex flex-col gap-2'>
+                    <DataField title={"Distance"} data={ distance === undefined ? '---' : String(Math.floor(distance)) + ' KM'} icon={Pay}/>
+                </div>
+                <div className='w-1/2 flex flex-col gap-2'>
+                    <DataField title={"Min. Fare"} data={(fare !== 0 ? '₱ ' + String(minFare) + '.00' : "---")} icon={Pay}/>
+                </div>
+            </div>
+            )
+            }
+
         <div className='px-6 mt-3'>
-            <button className='bg-[#0e137d] hover:bg-[#05094f] cursor-pointer w-full text-white py-2 rounded-lg disabled:opacity-60 disabled:pointer-events-none' disabled={canTap} onClick={tapIn}>
-                { cardData ? (cardData.tapped ? 'Already Tapped In.' : `Tap ${tap}` ) : `Tap ${tap}`}
+            <button className='bg-[#0e137d] hover:bg-[#05094f] cursor-pointer w-full text-white py-2 rounded-lg disabled:opacity-60 disabled:pointer-events-none' disabled={canTap} onClick={tap === 'in' ? tapIn : tapOut}>
+                { 
+                    tap === 'in' ?
+                    cardData ? (cardData.tapped ? 'Already Tapped In.' : `Tap ${tap}` ) : `Tap ${tap}` :
+                    cardData ? (cardData.tapped ? `Tap ${tap}` : `Please Tap In First.` ) : `Tap ${tap}`
+                }
             </button>
         </div>
 

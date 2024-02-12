@@ -13,7 +13,7 @@ const AdminLog = () => {
     const [passErr, setPassErr] = useState(false);
     const nav = useNavigate();
     const tapMeth = useContext(TapMethod)
-    const {login} = Middleware(tapMeth.currStation)
+    const {login} = Middleware(tapMeth.currStation, tapMeth.pass)
     const auth = isLogged()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

@@ -7,7 +7,7 @@ const cardSchema = new Schema({
     balance: {type: Number, require: true },
     tapped: {type: Boolean, require: true},
     origin: {type: String, require: true},
-    transactions: {type: {date: String, amount: Number, desc: String }},
+    transactions: {type: [{date: String, amount: Number, desc: String }]},
 }, {timestamps: true});
 
 export const cardModel = mongoose.model('Beep', cardSchema);

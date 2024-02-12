@@ -2,25 +2,29 @@ import React, { useContext } from "react";
 import UserSide from "./UserSide";
 import AdminLog from "./AdminLog";
 import { TapMethod } from "./context/Context";
+import Leaflet, { LatLngExpression, latLng } from "leaflet";
 
 interface Props {
   setTabAdmin: React.Dispatch<React.SetStateAction<boolean>>;
+  allStations : any[],
   tabAdmin: Boolean;
+  setRoutePoly: React.Dispatch<React.SetStateAction<Leaflet.LatLngExpression[][]>>
 }
 
-const DataArea: React.FC<Props> = ({ setTabAdmin, tabAdmin }) => {
+const DataArea: React.FC<Props> = ({ setTabAdmin,allStations,tabAdmin,setRoutePoly}) => {
 
   const tapMeth = useContext(TapMethod)
 
   const generateTabContent = () => {
+    let myStation = allStations.find((stat) => stat.name.toUpperCase() == tapMeth.currStation.toUpperCase())
     if (tabAdmin) return <AdminLog />;
-    else return <UserSide currStat={tapMeth.currStation} tap={tapMeth.pass} />;
+    else return <UserSide theStation={allStations} currStatObj={myStation} currStat={tapMeth.currStation} tap={tapMeth.pass} setRoutePoly={setRoutePoly} />;
   };
 
   return (
     <>
       <div
-        className="absolute bg-white z-10 sm:right-0 md:right-14 md:w-[350px] lg:right-26 xl:right-44 pt-5 md:top-1/2 md:translate-y-[-50%] flex flex-col lg:w-96 border rounded-lg"
+        className="absolute bg-white z-10 top-[670px] left-1/2 md:left-auto translate-x-[-50%] md:translate-x-0 w-[350px] sm:right-0 md:right-14 md:w-[350px] lg:right-26 xl:right-44 pt-5 md:top-1/2 md:translate-y-[-50%] flex flex-col lg:w-96 border rounded-lg"
         style={{ boxShadow: "0 0 13px 2px #b3b3b3" }}
       >
         <div className="bg-slate-400 flex flex-row pt-2 ps-2 gap-1">
