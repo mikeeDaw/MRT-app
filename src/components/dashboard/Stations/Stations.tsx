@@ -236,11 +236,11 @@ const Stations = () => {
 
   return (
     <>
-    <div className='p-10 flex flex-row h-full justify-center gap-16'>
+    <div className='px-0 pt-10 gap-8 md:p-10 flex flex-col md:flex-row h-full items-center md:items-start md:justify-center md:gap-16'>
       {/* Map & Edit Section */}
-      <div className='flex flex-col h-full w-5/12'>
+      <div className='flex flex-col w-10/12 h-[550px] md:h-full md:w-5/12'>
         {/* Map Part */}
-        <div className='rounded-2xl h-3/6 z-0'>
+        <div className='rounded-2xl h-4/6 md:h-3/6 z-0'>
            <MapContainer
               center={[14.6185267, 121.050621464]}
               zoom={17}
@@ -293,20 +293,20 @@ const Stations = () => {
            </MapContainer>
         </div>
         {/* Map Edit area */}
-        <div className='rounded-b-2xl h-1/2 h-3/6 flex ps-3 border-2 border-t-0 border-slate-800'> 
-          <div className='w-4/6 p-3'>
+        <div className='rounded-b-2xl h-1/2 h-3/6 flex md:ps-3 border-2 border-t-0 border-slate-800'> 
+          <div className='w-7/12 md:w-4/6 p-3'>
               <div className='flex flex-col justify-center h-full relative'>
 
                 <span className='text-sm font-bold'> Station Name</span>
-                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 me-10 focus:border-none editInp mb-3' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={name ? titleCase(name) : (editing ? '' : '- Select a Station -') } disabled={!editing} onChange={(e) => {
+                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 md:me-10 focus:border-none editInp mb-3' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={name ? titleCase(name) : (editing ? '' : '- Select a Station -') } disabled={!editing} onChange={(e) => {
                   setName(e.target.value) }} />
 
                 <span className='text-sm font-bold'> Station Code </span>
-                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 me-10 focus:border-none editInp mb-3' style={{border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={sCode ? sCode : '- Select a Station -'} disabled={true} onChange={(e) => {
+                <input className='bg-transparent p-0 text-sm text-slate-500 mt-1 md:me-10 focus:border-none editInp mb-3' style={{border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={sCode ? sCode : '- Select a Station -'} disabled={true} onChange={(e) => {
                   setScode(e.target.value) }} />
 
                 <span className='text-sm font-bold mb-1'> Coordinates </span>
-                <div className='flex w-full ps-1 pe-6 gap-3'>
+                <div className='flex w-full ps-1 md:pe-6 gap-3'>
                   <div className='flex items-center w-1/2 gap-2'>
                     <span className=''> X </span>
                     <input className='bg-transparent w-full p-0 text-sm text-slate-500 focus:border-none mb-1 editInp px-2' style={editing ? {border:'none', borderBottom:'1px solid #00B38C', color:'#00B38C' } : {border:'none', borderBottom:'1px solid #a7a7a7'}} type="text" value={xCoord ? xCoord : (editing ? '':'- N/A -')} disabled={!editing} onChange={(e) => {
@@ -342,7 +342,7 @@ const Stations = () => {
 
               </div>
           </div>
-          <div className='border-l border-[#6f6f6f] bg-[#6f6f6f] rounded-br-xl flex flex-col w-2/6 p-3 py-4 gap-2'>
+          <div className='border-l border-[#6f6f6f] bg-[#6f6f6f] rounded-br-xl flex flex-col w-5/12 md:w-2/6 p-3 py-4 gap-2'>
             <span className='text-xs font-bold text-white'>Connections:</span>
             <div className='flex flex-col pb-3 h-full gap-1 overflow-y-scroll scrollbar-hide'>
 
@@ -385,7 +385,7 @@ const Stations = () => {
       </div>
 
       {/* Stations List Section */}
-      <div className='flex flex-col w-5/12 p-5 pb-6 rounded-xl gap-3' style={{boxShadow: '4px 4px 22px -5px #696969'}}>
+      <div className='flex flex-col w-10/12 md:w-5/12 p-5 pb-6 rounded-xl gap-3 h-[500px] md:h-full ' style={{boxShadow: '4px 4px 22px -5px #696969'}}>
         <table>
           <thead>
             <tr className=''>

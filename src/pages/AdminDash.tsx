@@ -12,6 +12,8 @@ const AdminDash = () => {
 
   //Array.from(coordInputs.current!.children)
   const [tab, setTab] = useState<String>(localStorage.getItem('adminPage') ?? 'AddStation');
+  const [openTab, setOpenTab] = useState(false)
+
 
   // This useEffect is to stay on the current page when refreshed.
   useEffect(() => {
@@ -30,12 +32,11 @@ const AdminDash = () => {
 
   return (
     <>
-      <div className="flex flex-row">
-        <SideNav setTab={setTab}/>
-        {/* <Navibar /> */}
+      <div className="pb-10 md:pb-0 flex flex-row">
+        <SideNav setTab={setTab} opened={openTab} openSide={setOpenTab} />
         <div className="flex flex-col w-full">
-            <TopNav />
-          <div className="ms-0 w-full h-[calc(100vh-60px)] relative" id="contentArea">
+            <TopNav openSide={setOpenTab} side={openTab} />
+          <div className="ms-0 w-full min-h-[calc(100vh-60px)] md:h-[calc(100vh-60px)] relative" id="contentArea">
             <AnimatePresence>
               {generateView()}
             </AnimatePresence>

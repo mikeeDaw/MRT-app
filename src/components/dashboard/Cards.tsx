@@ -58,7 +58,6 @@ const Cards = () => {
 
     }
 
-    
     // Get All beep cards
     const getAll = async () => {
         console.log(endpoint)
@@ -183,12 +182,6 @@ const Cards = () => {
         setLoad(0); 
     }
 
-    // For Dragging
-    // const dragStart = (e:any, position : any) => {
-    //     dragged.current = position;
-    //     console.log(dragged.current)
-    // }
-
     const loadChange = (e: any) => {
         const re = /^[0-9\b]+$/;
         const val = e.target.value;
@@ -197,12 +190,45 @@ const Cards = () => {
         }
     }
 
+    const [sm, setSm] = useState(false)
+    const [cardSlide, setCardSlide] = useState(false)
+
+    window.addEventListener('resize', (e) => {
+      if(window.innerWidth < 768){
+        setSm(true)
+      } else {
+        setSm(false)
+      }
+    })
+
+    useEffect(()=>{
+        if(window.innerWidth < 768){
+            setSm(true)
+        }
+    },[])
+
 
 
   return (
     <>
-        <div className='w-full flex h-full'>
-            <motion.div className='bg-slate-200 w-1/4 h-full py-10'>
+        <div className='w-full flex flex-col h-full md:flex-row'>
+
+            {
+                sm && (
+                    <button className='flex px-9 mt-5 items-center gap-2' onClick={()=>setCardSlide(!cardSlide)}>
+                        <svg viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" className='w-7'><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19 3.32001H16C14.8954 3.32001 14 4.21544 14 5.32001V8.32001C14 9.42458 14.8954 10.32 16 10.32H19C20.1046 10.32 21 9.42458 21 8.32001V5.32001C21 4.21544 20.1046 3.32001 19 3.32001Z" stroke="#515151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M8 3.32001H5C3.89543 3.32001 3 4.21544 3 5.32001V8.32001C3 9.42458 3.89543 10.32 5 10.32H8C9.10457 10.32 10 9.42458 10 8.32001V5.32001C10 4.21544 9.10457 3.32001 8 3.32001Z" stroke="#515151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M19 14.32H16C14.8954 14.32 14 15.2154 14 16.32V19.32C14 20.4246 14.8954 21.32 16 21.32H19C20.1046 21.32 21 20.4246 21 19.32V16.32C21 15.2154 20.1046 14.32 19 14.32Z" stroke="#515151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M8 14.32H5C3.89543 14.32 3 15.2154 3 16.32V19.32C3 20.4246 3.89543 21.32 5 21.32H8C9.10457 21.32 10 20.4246 10 19.32V16.32C10 15.2154 9.10457 14.32 8 14.32Z" stroke="#515151" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+                        <span className='text-lg'> Cards </span>
+                    </button>
+                )
+            }
+
+            {
+                sm && cardSlide && (
+                    <div className='absolute inset-0 bg-black opacity-60 z-10' onClick={()=> setCardSlide(!cardSlide)}/>
+                )
+            }
+
+            <motion.div className={'absolute transition-all md:relative md:left-0 bg-slate-200 md:w-1/4 h-full py-10 z-20 ' + (cardSlide ? 'left-0' : 'left-[-100%]' )}>
                 <motion.div className='w-full flex flex-col items-center gap-3'>
                     {/* Search Bar */}
                     <div className='flex flex w-5/6 relative'>
@@ -238,8 +264,6 @@ const Cards = () => {
                         </div>
                     </div>
                 </motion.div>
-
-
             </motion.div>
 
             <div className='absolute left-10'>
@@ -247,29 +271,29 @@ const Cards = () => {
             </div>
 
             {/* Middle Area */}
-            <div className='w-1/2 h-full flex flex-col items-center justify-center relative pt-3'>
+            <div className='min-h-[350px] w-full md:w-1/2 h-full flex flex-col items-center justify-center relative md:pt-3'>
                 
                 {
                     select ? (
                         /* Beep Card */
                         <div className='w-5/6 h-5/6 flex flex-col rounded-xl relative' id='cardData' >
-                            <div className='absolute top-[-35px] left-1/2 translate-x-[-50%] bg-white rounded-full z-10'>
+                            <div className='absolute top-[-35px] left-1/2 translate-x-[-50%] bg-white rounded-full z-[3]'>
                                 <img src={Beep} alt="Beep Icon" className='w-[80px]' />
                             </div>
-                            <div className='h-2/4 bg-white rounded-t-xl p-4 pt-10 flex' style={{zIndex:1}}>
+                            <div className='md:h-2/4 bg-white rounded-t-xl p-4 pt-10 flex' style={{zIndex:1}}>
                                 <div className='flex flex-col w-full pt-3'>
                                     <div className='flex w-full flex-col items-center mb-5'>
-                                        <span className='text-2xl'> {selectedCard.uid} </span>
-                                        <span className='text-slate-400 text-sm'> UUID</span>
+                                        <span className='text-lg md:text-2xl'> {selectedCard.uid} </span>
+                                        <span className='text-slate-400 text-xs md:text-sm'> UUID</span>
                                     </div>
                                     <div className='flex'>
                                         <div className='flex flex-col items-center w-1/2'>
-                                            <span> Balance:</span>
-                                            <span className='text-xl'> Php {selectedCard.balance}.00 </span>
+                                            <span className='text-sm md:text-base'> Balance:</span>
+                                            <span className='text-base md:text-xl'> Php {selectedCard.balance}.00 </span>
                                         </div>
                                         <div className='flex flex-col w-1/2 items-center'>
-                                            <span> Date Created</span>
-                                            <span className='text-xl'> {new Date(selectedCard.createdAt).toLocaleString("en-US",
+                                            <span className='text-sm md:text-base'> Date Created</span>
+                                            <span className='text-base md:text-xl'> {new Date(selectedCard.createdAt).toLocaleString("en-US",
                                                         {
                                                             year: "numeric",
                                                             month: "short",
@@ -283,7 +307,7 @@ const Cards = () => {
                             </div>
 
                             <div className='bg-green-100 h-2/4 rounded-b-xl p-4 flex flex-col gap-2'>
-                                <span> Transactions </span>
+                                <span className='text-sm md:text-base'> Transactions </span>
                                 <div className='flex flex-col gap-2 overflow-y-scroll scrollbar-hide'>
                                 {
                                     selectedCard.transactions.toReversed().map((record:any) => {
@@ -326,10 +350,10 @@ const Cards = () => {
             </div>
 
             {/* Increase Load */}
-            <div className='w-1/4 p-2 flex flex-col justify-between py-10'>
+            <div className='w-full w-5/6 items-center md:w-1/4 px-7 pt-0 md:px-2 flex flex-col gap-4 md:gap-0 justify-between py-5 md:py-10'>
 
                 {/* Add Load */}
-                <div className='bg-slate-800 border-2 mt-4 border-slate-800 w-11/12 rounded-xl'>
+                <div className='bg-slate-800 border-2 md:mt-4 border-slate-800 w-11/12 rounded-xl'>
                     <div className='p-3 pt-2 rounded-t-xl text-white'>
                         Add Load
                     </div>

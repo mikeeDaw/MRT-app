@@ -115,7 +115,7 @@ const Settings = () => {
         <ToastContainer className="" stacked />
     </div>
     <div className='flex bg-slate-300 h-full p-6'>
-        <div className='w-5/12 lg:w-4/12 bg-white h-fit px-4 py-6 rounded-lg flex flex-col gap-5'>
+        <div className='w-full md:w-5/12 lg:w-4/12 bg-white h-fit px-4 py-6 rounded-lg flex flex-col gap-5'>
           <div className='flex justify-between px-1 relative'>
             <span className='font-bold'> Charges </span>
             {

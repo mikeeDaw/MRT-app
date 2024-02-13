@@ -57,7 +57,7 @@ const UserSide: React.FC<Props> = ({theStation, currStat, currStatObj ,tap, setR
                            setDistance(Math.floor(distansya))
                            setTotalPrice(Math.floor(distansya) * fare === 0 ? minFare : Math.floor(distansya) * fare)
                         
-                           console.log(path)
+                           // Change Color of Polyline
                            let poly:any[] = []
                            path.path.forEach((code, idx) => {
                             if(idx !== 0){

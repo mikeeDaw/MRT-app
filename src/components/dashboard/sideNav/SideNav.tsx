@@ -4,10 +4,12 @@ import Tabs from './Tabs'
 import { Middleware } from '../../../middleware/Middleware' 
 
 interface Props {
-  setTab : React.Dispatch<React.SetStateAction<String>>
+  setTab : React.Dispatch<React.SetStateAction<String>>,
+  opened : boolean,
+  openSide : React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const SideNav : React.FC<Props> = ({setTab}) => {
+const SideNav : React.FC<Props> = ({setTab, opened, openSide}) => {
 
   const [activeIcon, setActiveIcon] = useState(localStorage.getItem('adminPage') ?? 'AddStation')
 
@@ -18,7 +20,8 @@ const SideNav : React.FC<Props> = ({setTab}) => {
   const { logout } = Middleware()
 
   return (
-    <div className={"flex flex-col items-center w-[75px] pt-5 pb-6 px-2 bg-[#202758] gap-3"}>
+    <>
+    <div className={"absolute flex h-screen md:relative md:left-auto flex-col items-center w-[75px] pt-5 pb-6 px-1 lg:px-2 bg-[#202758] gap-3 z-40 transition-all " + (opened ? 'left-0' : 'left-[-75px]')}>
         <div className='border-b border-[#58ECC2] pt-1 pb-4'>
             <a href="">
                 {<img src={MRT} alt="Mrt Logo" className='w-full translate-x-[-3px]' />}
@@ -39,6 +42,13 @@ const SideNav : React.FC<Props> = ({setTab}) => {
 
 
     </div>
+    {
+      opened && (
+        <div className='absolute inset-0 bg-[#000] z-30 opacity-70' onClick={()=>openSide(!opened)}/>
+      )
+    }
+
+    </>
   )
 }
 
