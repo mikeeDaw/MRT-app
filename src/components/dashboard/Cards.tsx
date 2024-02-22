@@ -8,7 +8,11 @@ import { cardList, cardData } from '../../constants/animate'
 import { ToastContainer, toast } from 'react-toastify'
 const endpoint = process.env.REACT_APP_URL
 
-const Cards = () => {
+interface Props {
+    setHeader: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Cards: React.FC<Props> = ({setHeader}) => {
 
     const { getToken, logout } = Middleware()
 
@@ -17,6 +21,7 @@ const Cards = () => {
     const [selectedCard, setSelectedCard] = useState<any>({})
     const [select, setSelect] = useState(false)
     const [load, setLoad] = useState(0);
+    const [minLoad, setMinLoad] = useState(0)
     let delay = 0;
 
     // const dragged = useRef();
@@ -112,7 +117,7 @@ const Cards = () => {
                     theme: "dark",
                   });
             } else if (jason.status === 401){
-                toast.error(`Invalid amount.`, {
+                toast.error(`Amount must be above ₱${minLoad}.`, {
                     position: "top-center",
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -172,8 +177,30 @@ const Cards = () => {
 
     }
 
+    // Get Minimum Load
+    const getMinLoad = async () => {
+        try {
+          const response = await fetch(`${endpoint}/constants/get`, {
+            method: 'GET',
+            headers: {
+              "Content-Type": 'application/json',
+            },
+          })
+          .then(async (jason) => {
+            if(jason.status === 200){
+              const data = await jason.json();
+              setMinLoad(data.minLoad);
+            }
+          })
+        } catch (error : any) {
+          console.log(error.message);
+        }
+      }
+
     useEffect(() => {
         getAll()
+        getMinLoad()
+        setHeader('Beep Cards')
     },[])
 
     const cardClick = (data:any) => {
@@ -187,6 +214,16 @@ const Cards = () => {
         const val = e.target.value;
         if( (val === '' || re.test(val)) && (val < 2000) ){
             setLoad(val);
+        } else {
+            toast.error(`Please enter a digit.`, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
         }
     }
 
@@ -194,7 +231,7 @@ const Cards = () => {
     const [cardSlide, setCardSlide] = useState(false)
 
     window.addEventListener('resize', (e) => {
-      if(window.innerWidth < 768){
+      if(window.innerWidth <= 1024){
         setSm(true)
       } else {
         setSm(false)
@@ -202,7 +239,7 @@ const Cards = () => {
     })
 
     useEffect(()=>{
-        if(window.innerWidth < 768){
+        if(window.innerWidth <= 1024){
             setSm(true)
         }
     },[])
@@ -211,7 +248,7 @@ const Cards = () => {
 
   return (
     <>
-        <div className='w-full flex flex-col h-full md:flex-row'>
+        <div className='w-full flex flex-col h-[calc(100%-60px)] gap-10 xl:flex-row lg:gap-10 xl:gap-0 xl:h-full'>
 
             {
                 sm && (
@@ -228,7 +265,7 @@ const Cards = () => {
                 )
             }
 
-            <motion.div className={'absolute transition-all md:relative md:left-0 bg-slate-200 md:w-1/4 h-full py-10 z-20 ' + (cardSlide ? 'left-0' : 'left-[-100%]' )}>
+            <motion.div className={'absolute transition-all xl:relative xl:left-0 bg-slate-200 xl:w-1/4 h-full py-10 z-10 ' + (cardSlide ? 'left-0' : 'left-[-100%]' )}>
                 <motion.div className='w-full flex flex-col items-center gap-3'>
                     {/* Search Bar */}
                     <div className='flex flex w-5/6 relative'>
@@ -267,33 +304,33 @@ const Cards = () => {
             </motion.div>
 
             <div className='absolute left-10'>
-                <ToastContainer className="" stacked />
+                <ToastContainer className="" stacked limit={5} />
             </div>
 
             {/* Middle Area */}
-            <div className='min-h-[350px] w-full md:w-1/2 h-full flex flex-col items-center justify-center relative md:pt-3'>
+            <div className='min-h-[340px] w-full lg:h-fit xl:h-full xl:w-1/2 h-full flex flex-col items-center justify-center relative md:pt-3'>
                 
                 {
                     select ? (
                         /* Beep Card */
-                        <div className='w-5/6 h-5/6 flex flex-col rounded-xl relative' id='cardData' >
+                        <div className='w-5/6 h-full lg:h-5/6 flex flex-col rounded-xl relative' id='cardData' >
                             <div className='absolute top-[-35px] left-1/2 translate-x-[-50%] bg-white rounded-full z-[3]'>
                                 <img src={Beep} alt="Beep Icon" className='w-[80px]' />
                             </div>
-                            <div className='md:h-2/4 bg-white rounded-t-xl p-4 pt-10 flex' style={{zIndex:1}}>
-                                <div className='flex flex-col w-full pt-3'>
+                            <div className=' h-1/2 md:h-1/2 bg-white rounded-t-xl p-4 pt-10 flex lg:h-fit xl:h-1/2 ' style={{zIndex:1}}>
+                                <div className='flex flex-col w-full lg:h-fit pt-3'>
                                     <div className='flex w-full flex-col items-center mb-5'>
                                         <span className='text-lg md:text-2xl'> {selectedCard.uid} </span>
                                         <span className='text-slate-400 text-xs md:text-sm'> UUID</span>
                                     </div>
                                     <div className='flex'>
                                         <div className='flex flex-col items-center w-1/2'>
-                                            <span className='text-sm md:text-base'> Balance:</span>
-                                            <span className='text-base md:text-xl'> Php {selectedCard.balance}.00 </span>
+                                            <span className='text-sm lg:text-2xl xl:text-base'> Balance:</span>
+                                            <span className='text-base lg:text-3xl xl:text-xl'> Php {selectedCard.balance}.00 </span>
                                         </div>
                                         <div className='flex flex-col w-1/2 items-center'>
-                                            <span className='text-sm md:text-base'> Date Created</span>
-                                            <span className='text-base md:text-xl'> {new Date(selectedCard.createdAt).toLocaleString("en-US",
+                                            <span className='text-sm lg:text-2xl xl:text-base'> Date Created</span>
+                                            <span className='text-base lg:text-3xl xl:text-xl'> {new Date(selectedCard.createdAt).toLocaleString("en-US",
                                                         {
                                                             year: "numeric",
                                                             month: "short",
@@ -306,7 +343,7 @@ const Cards = () => {
                                 </div>
                             </div>
 
-                            <div className='bg-green-100 h-2/4 rounded-b-xl p-4 flex flex-col gap-2'>
+                            <div className='bg-green-100 h-1/2 rounded-b-xl p-4 flex flex-col gap-2'>
                                 <span className='text-sm md:text-base'> Transactions </span>
                                 <div className='flex flex-col gap-2 overflow-y-scroll scrollbar-hide'>
                                 {
@@ -350,10 +387,10 @@ const Cards = () => {
             </div>
 
             {/* Increase Load */}
-            <div className='w-full w-5/6 items-center md:w-1/4 px-7 pt-0 md:px-2 flex flex-col gap-4 md:gap-0 justify-between py-5 md:py-10'>
+            <div className='w-full items-center xl:w-2/6 px-7 pt-0 md:px-2 flex flex-col gap-4 md:gap-0 justify-between py-5 md:py-10 lg:pt-0 lg:gap-5 xl:gap-0 lg:w-full'>
 
                 {/* Add Load */}
-                <div className='bg-slate-800 border-2 md:mt-4 border-slate-800 w-11/12 rounded-xl'>
+                <div className='bg-slate-800 border-2 md:mt-4 border-slate-800 w-11/12 lg:w-3/6 xl:w-11/12 rounded-xl'>
                     <div className='p-3 pt-2 rounded-t-xl text-white'>
                         Add Load
                     </div>
@@ -372,7 +409,7 @@ const Cards = () => {
                 </div>
 
                 {/* Delete Button */}
-                <button className='flex px-3 py-1.5 gap-3 items-center border-2 border-[#ff5959] bg-[#ff5959] w-9/12 mt-3 rounded-full transition-all duration-500 disabled:opacity-60 disabled:pointer-events-none' id='delBtn' onClick={()=>{deleteCard(selectedCard.uid)}} disabled={(select ? false : true)}>
+                <button className='flex px-3 py-1.5 gap-3 items-center border-2 border-[#ff5959] bg-[#ff5959] w-9/12 lg:w-6/12 xl:w-9/12 mt-3 rounded-full transition-all duration-500 disabled:opacity-60 disabled:pointer-events-none' id='delBtn' onClick={()=>{deleteCard(selectedCard.uid)}} disabled={(select ? false : true)}>
                     <div className='p-1.5 rounded-full bg-[#ff9a9a]' draggable
                     onDragStart={(e) => console.log(e)}>
                         <img src={Thrash} alt="Thrash Icon" className='w-6' />

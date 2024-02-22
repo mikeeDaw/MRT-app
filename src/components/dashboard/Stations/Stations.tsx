@@ -11,7 +11,11 @@ import MapFly from './MapFly';
 import { ToastContainer, toast } from 'react-toastify';
 const endpoint = process.env.REACT_APP_URL
 
-const Stations = () => {
+interface Props {
+  setHeader: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Stations: React.FC<Props> = ({setHeader}) => {
 
     const {getToken, logout} = Middleware()
 
@@ -149,6 +153,7 @@ const Stations = () => {
 
     useEffect(()=> {
       getAllStations()
+      setHeader('View / Modify Stations')
     },[])
 
     // For Polylines
@@ -236,16 +241,17 @@ const Stations = () => {
 
   return (
     <>
-    <div className='px-0 pt-10 gap-8 md:p-10 flex flex-col md:flex-row h-full items-center md:items-start md:justify-center md:gap-16'>
+    <div className='px-0 pt-10 gap-8 md:p-10 md:min-h-[calc(100vh-60px)] flex flex-col xl:flex-row h-full items-center xl:items-start xl:justify-center md:gap-16'>
       {/* Map & Edit Section */}
-      <div className='flex flex-col w-10/12 h-[550px] md:h-full md:w-5/12'>
+      <div className='flex flex-col w-10/12 h-[550px] lg:h-[600px] xl:h-full xl:w-5/12'>
         {/* Map Part */}
-        <div className='rounded-2xl h-4/6 md:h-3/6 z-0'>
+        <div className='rounded-2xl h-4/6 xl:h-3/6 z-0'>
            <MapContainer
               center={[14.6185267, 121.050621464]}
               zoom={17}
               zoomSnap={16}
               className='h-full w-full rounded-t-2xl'
+              zoomControl={false}
             >
               <TileLayer
                 url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
@@ -293,8 +299,8 @@ const Stations = () => {
            </MapContainer>
         </div>
         {/* Map Edit area */}
-        <div className='rounded-b-2xl h-1/2 h-3/6 flex md:ps-3 border-2 border-t-0 border-slate-800'> 
-          <div className='w-7/12 md:w-4/6 p-3'>
+        <div className='rounded-b-2xl h-3/6 flex border-2 border-t-0 border-slate-800'> 
+          <div className='w-7/12 md:w-4/6 p-3 xl:ps-6'>
               <div className='flex flex-col justify-center h-full relative'>
 
                 <span className='text-sm font-bold'> Station Name</span>
@@ -385,7 +391,7 @@ const Stations = () => {
       </div>
 
       {/* Stations List Section */}
-      <div className='flex flex-col w-10/12 md:w-5/12 p-5 pb-6 rounded-xl gap-3 h-[500px] md:h-full ' style={{boxShadow: '4px 4px 22px -5px #696969'}}>
+      <div className='flex flex-col w-10/12 xl:w-5/12 p-5 pb-6 rounded-xl gap-3 h-[500px] xl:h-full ' style={{boxShadow: '4px 4px 22px -5px #696969'}}>
         <table>
           <thead>
             <tr className=''>
@@ -405,7 +411,7 @@ const Stations = () => {
                   {
                     stationCard.map((card) => {
                     delay+=0.12
-                    return <StationCard key={card.code} code={card.code} name={titleCase(card.name) + " Station"} delay={delay} selected={selectedSt ? (selectedSt.code == card.code) : false} setSelect={() => {statClick(card); setEditing(false)}} connections={card.connected} getAll={getAllStations} resetter={resetSelected} />
+                    return <StationCard key={card.code} code={card.code} name={titleCase(card.name) + " Station"} delay={delay} selected={selectedSt ? (selectedSt.code == card.code) : false} setSelect={() => {statClick(card); setEditing(false); window.scrollTo({top:0, behavior:'smooth'})}} connections={card.connected} getAll={getAllStations} resetter={resetSelected} />
                   } )
                   }
 

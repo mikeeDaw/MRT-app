@@ -14,7 +14,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const endpoint = process.env.REACT_APP_URL
 
-const AddStation = () => {
+interface Props {
+  setHeader: React.Dispatch<React.SetStateAction<string>>
+}
+
+const AddStation : React.FC<Props> = ({setHeader}) => {
     const tapMeth = useContext(TapMethod)
     const {getToken} = Middleware(tapMeth.currStation)
 
@@ -104,6 +108,7 @@ const AddStation = () => {
 
     useEffect(()=>{
       getTheStations()
+      setHeader("Create a Station")
     },[])
 
     // For Polyline & LatLng
@@ -218,9 +223,9 @@ const AddStation = () => {
     },[])
 
   return (
-    <motion.div>
+    <motion.div className='relative w-full h-screen'>
       {/* Map Section */}
-      <div className="w-full h-full absolute top-0 left-0 z-0">
+      <div className="w-full h-[100vh] top-0 left-0 z-0 absolute">
         <Map
           center={[14.59673, 121.07609]}
           zoom={12}
@@ -254,14 +259,14 @@ const AddStation = () => {
 
       {
         !addWindow && sm && (
-          <button className='absolute z-10 bg-white ps-2 pe-2 py-2 right-0 top-24 rounded-tl-xl rounded-bl-xl' onClick={()=>setAddWindow(!addWindow)} >
+          <button key={'addWindow'} className='absolute z-10 bg-white ps-2 pe-2 py-2 right-0 top-24 rounded-tl-xl rounded-bl-xl' onClick={()=>setAddWindow(!addWindow)} >
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className='w-7 rotate-180'><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fillRule="evenodd" clipRule="evenodd" d="M5.70711 4.29289C5.31658 3.90237 4.68342 3.90237 4.29289 4.29289C3.90237 4.68342 3.90237 5.31658 4.29289 5.70711L10.5858 12L4.29289 18.2929C3.90237 18.6834 3.90237 19.3166 4.29289 19.7071C4.68342 20.0976 5.31658 20.0976 5.70711 19.7071L12.7071 12.7071C13.0976 12.3166 13.0976 11.6834 12.7071 11.2929L5.70711 4.29289ZM12.7071 4.29289C12.3166 3.90237 11.6834 3.90237 11.2929 4.29289C10.9024 4.68342 10.9024 5.31658 11.2929 5.70711L17.5858 12L11.2929 18.2929C10.9024 18.6834 10.9024 19.3166 11.2929 19.7071C11.6834 20.0976 12.3166 20.0976 12.7071 19.7071L19.7071 12.7071C20.0976 12.3166 20.0976 11.6834 19.7071 11.2929L12.7071 4.29289Z" fill="#2d2d2d"></path> </g></svg>
           </button>
         )
       }
      
       {/* Add Station Section */}
-      <motion.div {...introPage} className={"absolute md:right-16 xl:right-28 top-24 bg-white z-10 p-5 pb-4 w-[320px] md:w-[370px] rounded-xl transition-all " + (addWindow ? 'right-2' : 'right-[-100%]')} style={{boxShadow: "0 0 10px -3px #474747"}}>
+      <motion.div {...introPage} className={"absolute md:right-16 xl:right-28 top-24 bg-white z-10 p-5 pb-4 w-[320px] md:w-[370px] rounded-xl transition-all " + (addWindow ? 'right-2' : 'right-[-100%]')} style={addWindow ? {boxShadow: "0 0 10px -3px #474747"} : {...{boxShadow: "0 0 10px -3px #474747"},display:'none'}}>
         <div className="flex flex-col" >
           {
             sm && (

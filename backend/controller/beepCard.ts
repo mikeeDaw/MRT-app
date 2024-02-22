@@ -109,8 +109,17 @@ export const TapInCard = async (req: express.Request, res: express.Response, nex
     console.log(uid,orig)
 
     try {
-        const updated = await UpdateCardById(uid,{tapped: true, origin: orig})
-        res.status(200).json(updated)
+        const card = await getCardByUID(uid)
+        const prices = await getConstById('Constant')
+        if(card && prices) {
+            if(card.balance! < prices.minFare!){
+                res.status(401).json(card)
+            } else {
+                const updated = await UpdateCardById(uid,{tapped: true, origin: orig})
+                res.status(200).json(updated)
+            }
+        }
+
     } catch (error) {
         res.status(400).json({msg: "Error In Tapping In."})
     }

@@ -4,7 +4,11 @@ import { Middleware } from '../../../middleware/Middleware'
 import { ToastContainer, toast } from 'react-toastify'
 const endpoint = process.env.REACT_APP_URL
 
-const Settings = () => {
+interface Props {
+  setHeader: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Settings: React.FC<Props> = ({setHeader}) => {
 
   const { getToken, logout } = Middleware();
 
@@ -17,6 +21,9 @@ const Settings = () => {
   const [minLoad, setMinLoad] = useState(0);
   const [cancel, setCancel] = useState(0)
   
+  useEffect(()=>{
+    setHeader("Fare Management")
+  })
 
   const getData = async () => {
 
@@ -112,10 +119,10 @@ const Settings = () => {
   return (
     <>
     <div className='absolute left-10'>
-        <ToastContainer className="" stacked />
+        <ToastContainer className="" stacked limit={5} />
     </div>
     <div className='flex bg-slate-300 h-full p-6'>
-        <div className='w-full md:w-5/12 lg:w-4/12 bg-white h-fit px-4 py-6 rounded-lg flex flex-col gap-5'>
+        <div className='w-full md:w-5/12 lg:w-7/12 xl:w-4/12 bg-white h-fit px-4 py-6 rounded-lg flex flex-col gap-5'>
           <div className='flex justify-between px-1 relative'>
             <span className='font-bold'> Charges </span>
             {

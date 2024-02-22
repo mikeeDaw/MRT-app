@@ -172,6 +172,17 @@ const UserSide: React.FC<Props> = ({theStation, currStat, currStatObj ,tap, setR
                         progress: undefined,
                         theme: "colored",
                       });
+                } else if (jason.status === 401) {
+                    toast.error(`Insufficient Balance.`, {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        pauseOnHover: false,
+                        progress: undefined,
+                        theme: "colored",
+                      });
                 }
             })
             setCanTap(true)
@@ -209,12 +220,13 @@ const UserSide: React.FC<Props> = ({theStation, currStat, currStatObj ,tap, setR
                   return
             }
 
+            const pricey = distance! < 2 ? minFare : totalPrice;
             const response = await fetch(`${endpoint}/beep/tapOut`, {
                 method: 'PATCH',
                 headers: {
                     "Content-Type": 'application/json',
                 },
-                body: JSON.stringify({uid:inputVal, desc: `${cardData?.origin.toUpperCase()} - ${currStat.toUpperCase()}`, balance: cardData?.balance, price: totalPrice})
+                body: JSON.stringify({uid:inputVal, desc: `${cardData?.origin.toUpperCase()} - ${currStat.toUpperCase()}`, balance: cardData?.balance, price: pricey})
             }).then(async (jason) => {
                 if(jason.status === 200){
                     let theUpdated = await jason.json();
@@ -238,6 +250,7 @@ const UserSide: React.FC<Props> = ({theStation, currStat, currStatObj ,tap, setR
         }
 
     }
+
   return (
     <>
     <div
@@ -274,7 +287,7 @@ const UserSide: React.FC<Props> = ({theStation, currStat, currStatObj ,tap, setR
             <div className='w-1/2 flex flex-col gap-2'>
                 <DataField title={"Fare"} data={ tap === 'in' ? 
                     (fare !== 0 ? '₱ ' + String(fare) + ' /KM' : "---") : 
-                    (totalPrice !== 0 ?  '₱ '+ String(totalPrice) + ".00" : '₱ ----')    
+                    (totalPrice !== 0 ?  ( distance! < 2 ?  '₱ '+String(minFare)+'.00' : '₱ '+ String(totalPrice) + ".00") : '₱ ----')    
                 } icon={Pay}/>
                 <DataField title={"To"} data={
                     (tap !== 'in' ? titleCase(currStat) : '---')
@@ -293,7 +306,7 @@ const UserSide: React.FC<Props> = ({theStation, currStat, currStatObj ,tap, setR
                 </div>
             </div>
             )
-            }
+        }
 
         <div className='px-6 mt-3'>
             <button className='bg-[#0e137d] hover:bg-[#05094f] cursor-pointer w-full text-white py-2 rounded-lg disabled:opacity-60 disabled:pointer-events-none' disabled={canTap} onClick={tap === 'in' ? tapIn : tapOut}>

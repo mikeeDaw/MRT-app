@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 
 interface Props {
     title: string,
@@ -31,6 +32,16 @@ const SettingItem  : React.FC<Props> = ({title, price, edit, setter, cancel = 0}
     if((value === '' || re.test(value)) && value < 2001){
         setVal(Number(value));
         setter(Number(value));
+    } else {
+      toast.error(`Please Enter a digit.`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   }
 

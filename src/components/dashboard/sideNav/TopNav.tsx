@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface Props {
   openSide : React.Dispatch<React.SetStateAction<boolean>>,
-  side: boolean
+  side: boolean,
+  header: string
 }
 
-const TopNav: React.FC<Props> = ({openSide, side}) => {
+const TopNav: React.FC<Props> = ({openSide, side,header}) => {
 
-  const [sm, setSm] = useState(true)
+  const [sm, setSm] = useState(false)
 
   window.addEventListener('resize', (e) => {
     if(window.innerWidth < 768){
@@ -16,9 +17,16 @@ const TopNav: React.FC<Props> = ({openSide, side}) => {
       setSm(false)
     }
   })
+
+  useEffect(()=>{
+    if(window.innerWidth < 768){
+        setSm(true)
+    }
+  },[])
+
   return (
     <>
-    <div className="h-[60px] flex items-center justify-between ps-5 pe-10" style={{boxShadow: '3px 1px 6px -1px #c9c9c9', zIndex:'10'}}>
+    <div className="h-[60px] w-full flex items-center justify-between ps-5 pe-10 fixed lg:w-[calc(100%-75px)] bg-white md:ms-[75px] z-20" style={{boxShadow: '3px 1px 6px -1px #c9c9c9'}}>
         {
           sm && (
             <button className='w-6 absolute' onClick={()=>openSide(!side)}>
@@ -27,10 +35,10 @@ const TopNav: React.FC<Props> = ({openSide, side}) => {
           )
         }
 
-        <span className='ps-10 md:ps-0'> Sample Title Header</span>
+        <span className='ps-10 md:ps-0 font-bold'> {header}</span>
         <div>
             <button className='rounded-xl border border-[#00B38C] px-4 py-1 text-[#00B38C] text-sm'>
-                Click Me
+                Sample
             </button>    
         </div>       
     </div>

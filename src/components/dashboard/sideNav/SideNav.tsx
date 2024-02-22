@@ -21,7 +21,7 @@ const SideNav : React.FC<Props> = ({setTab, opened, openSide}) => {
 
   return (
     <>
-    <div className={"absolute flex h-screen md:relative md:left-auto flex-col items-center w-[75px] pt-5 pb-6 px-1 lg:px-2 bg-[#202758] gap-3 z-40 transition-all " + (opened ? 'left-0' : 'left-[-75px]')}>
+    <div className={"flex h-screen md:fixed md:left-auto flex-col items-center w-[75px] pt-5 pb-6 px-1 lg:px-2 bg-[#202758] gap-3 z-40 transition-all " + (opened ? 'left-0 fixed' : ' absolute left-[-75px]')}>
         <div className='border-b border-[#58ECC2] pt-1 pb-4'>
             <a href="">
                 {<img src={MRT} alt="Mrt Logo" className='w-full translate-x-[-3px]' />}
@@ -44,7 +44,7 @@ const SideNav : React.FC<Props> = ({setTab, opened, openSide}) => {
     </div>
     {
       opened && (
-        <div className='absolute inset-0 bg-[#000] z-30 opacity-70' onClick={()=>openSide(!opened)}/>
+        <div className='fixed w-full h-full bg-[#000] z-30 h-full opacity-70' onClick={()=>openSide(!opened)}/>
       )
     }
 
