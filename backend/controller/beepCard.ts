@@ -9,6 +9,13 @@ import {
   cardModel,
 } from "../models/CardModel";
 import { getConstById } from "../models/ConstantModel";
+import {
+  createGraph,
+  findLongestPath,
+  maxPathDistance,
+} from "../calculations/pathing";
+import { ConstMod, StationMod } from "../types/models";
+import { getStations } from "../models/stationModel";
 
 export const generateCard = async (
   req: express.Request,
@@ -34,8 +41,7 @@ export const generateCard = async (
 
 export const getAllCards = async (
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   try {
     const cardsRes = await getCards();
@@ -47,8 +53,7 @@ export const getAllCards = async (
 
 export const deleteCard = async (
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   let uid = req.body.uid;
 
@@ -73,8 +78,7 @@ export const deleteCard = async (
 
 export const getOneCard = async (
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   let uid = req.body.uid;
   try {
@@ -92,8 +96,7 @@ export const getOneCard = async (
 
 export const updateLoad = async (
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   let uid = req.body.uid;
   let added = req.body.load;
@@ -140,8 +143,7 @@ export const updateLoad = async (
 
 export const TapInCard = async (
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   const uid = req.body.uid;
   const orig = req.body.origin;
@@ -168,8 +170,7 @@ export const TapInCard = async (
 
 export const TapOutCard = async (
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   const uid = req.body.uid;
   const currentBal = Number(req.body.balance);
@@ -202,10 +203,71 @@ export const TapOutCard = async (
   }
 };
 
+export const TapOutMobile = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const uid = req.body.uid;
+  const currStation = req.body.currentStation;
+  const descr = req.body.desc;
+  const currDate = new Date();
+
+  const card = await getCardByUID(uid);
+  const prices = await getConstById("Constant");
+  const theStation = await getStations();
+  const currStatObj = theStation.find(
+    (item) => item.name!.toUpperCase() == currStation.toUpperCase()
+  );
+  console.log(theStation);
+  if (card && prices && theStation) {
+    const grap = createGraph(theStation);
+
+    if (grap) {
+      let originStation = theStation.find(
+        (item) => item.name!.toUpperCase() === card.origin!.toUpperCase()
+      );
+      let path = findLongestPath(
+        originStation!.code!,
+        String(currStatObj!.code),
+        grap
+      );
+      console.log("Path:", path);
+      let distansya = Math.floor(maxPathDistance(path.path, grap));
+      console.log("Distance:", distansya);
+      let thePrice =
+        distansya * prices.farePerKM! === 0
+          ? prices.minFare!
+          : distansya * prices.farePerKM!;
+
+      try {
+        await cardModel.updateOne(
+          { uid: uid },
+          {
+            $push: {
+              transactions: {
+                date: String(currDate),
+                amount: thePrice,
+                desc: descr,
+              },
+            },
+          }
+        );
+        const updated = await UpdateCardById(uid, {
+          tapped: false,
+          origin: "",
+          balance: card.balance! - thePrice,
+        });
+        res.status(200).json(updated);
+      } catch (error) {
+        res.status(400).json({ msg: error });
+      }
+    }
+  }
+};
+
 export const getCardsMobile = async (
   req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
+  res: express.Response
 ) => {
   const payload = req.body;
   console.log(payload, typeof payload);

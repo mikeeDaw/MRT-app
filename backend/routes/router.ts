@@ -10,6 +10,7 @@ import {
   TapInCard,
   TapOutCard,
   getCardsMobile,
+  TapOutMobile,
 } from "../controller/beepCard";
 import {
   makeStation,
@@ -17,7 +18,12 @@ import {
   updateStation,
   delStation,
 } from "../controller/trainStation";
-import { getConstant, updConstDocu } from "../controller/constants";
+import {
+  getConstant,
+  updConstDocu,
+  updMaintenance,
+} from "../controller/constants";
+import { newTapIn } from "../controller/mobile";
 
 const router = express.Router();
 
@@ -69,5 +75,10 @@ router.delete("/station/deleteMe", isAuthenticated, delStation);
 // Constant Operations
 router.get("/constants/get", getConstant);
 router.patch("/constants/edit", isAuthenticated, updConstDocu);
+router.patch("/constants/maintenance", isAuthenticated, updMaintenance);
+
+// From Mobile
+router.patch("/mobile/tapIn", newTapIn);
+router.patch("/mobile/tapOut", TapOutMobile);
 
 export default router;
