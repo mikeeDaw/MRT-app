@@ -17,7 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 const endpoint = process.env.REACT_APP_URL;
 
 const Home = () => {
-  const [tabAdmin, setTabAdmin] = useState("Login");
+  const [tabAdmin, setTabAdmin] = useState("Ticketing");
   const [allStations, setAllStations] = useState<any>([]);
   const [polyLine, setPolyLine] = useState<LatLngExpression[][]>([]);
   const [polyLin, setPolyLin] = useState<LatLngExpression[][]>([]);

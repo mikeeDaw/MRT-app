@@ -10,6 +10,7 @@ import {
   findLongestPath,
   maxPathDistance,
 } from "../constants/pathing";
+import { toast } from "react-toastify";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -30,8 +31,6 @@ const DataArea: React.FC<Props> = ({
   const tapMeth = useContext(TapMethod);
   const [maintenance, setMaintenance] = useState(false);
   const [constants, setConstants] = useState<any>({});
-  const [mobileBody, setMobileBody] = useState<any>({});
-  const [mobileChange, setMobileChange] = useState<any>();
 
   /* For DB Listeners */
   const [mongoapp, setMongoapp] =
@@ -56,7 +55,7 @@ const DataArea: React.FC<Props> = ({
   useEffect(() => {
     const getConstants = async () => {
       // Get the Prices in Constants Collection
-      const prices = await fetch("http://localhost:4000/constants/get", {
+      const prices = await fetch(`${endpoint}/constants/get`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -71,13 +70,10 @@ const DataArea: React.FC<Props> = ({
         .catch((error) => console.log(error.message));
     };
     getConstants();
+    console.log("SSS");
   }, []);
 
   const [user, setUser] = useState<Realm.User>();
-  const [events, setEvents] = useState<
-    globalThis.Realm.Services.MongoDB.ChangeEvent<any>[]
-  >([]);
-
   const [mobileCollection, setMobileCollection] = useState<
     globalThis.Realm.Services.MongoDB.MongoDBCollection<any> | undefined
   >();
@@ -108,125 +104,6 @@ const DataArea: React.FC<Props> = ({
 
     login();
   }, [mongoapp]);
-
-  // Tap Listener
-  useEffect(() => {
-    const mobileListen = async () => {
-      if (mobileCollection) {
-        for await (const change of mobileCollection.watch()) {
-          console.log("here", change);
-          setMobileChange(change);
-        }
-      }
-    };
-    mobileListen();
-  }, [mobileCollection]);
-
-  // useEffect(() => {
-  //   const mobileTap = async () => {
-  //     if (mobileChange) {
-  //       if (mobileChange.operationType === "replace") {
-  //         const newDoc = mobileChange.fullDocument;
-  //         console.log(newDoc);
-  //         if (tapMeth.pass === "in") {
-  //           if (!newDoc.tapped) {
-  //             const response = await fetch(`${endpoint}/beep/tapIn`, {
-  //               method: "PATCH",
-  //               headers: {
-  //                 "Content-Type": "application/json",
-  //               },
-  //               body: JSON.stringify({
-  //                 uid: newDoc.uid,
-  //                 origin: tapMeth.currStation.toUpperCase(),
-  //               }),
-  //             }).then(async (jason) => {
-  //               if (jason.status === 200) {
-  //                 const data = await jason.json();
-  //                 await fetch("http://10.200.52.52:4000/mobile/tapIn", {
-  //                   method: "PATCH",
-  //                   headers: {
-  //                     "Content-Type": "application/json",
-  //                   },
-  //                   body: JSON.stringify(data),
-  //                 }).then(async (jason) => {
-  //                   if (jason.status === 200) {
-  //                     return await jason.json();
-  //                   }
-  //                 });
-  //                 console.log(data);
-  //                 //Tapped IN
-  //               } else if (jason.status === 401) {
-  //                 // Insufficient balance
-  //               }
-  //             });
-  //           } else {
-  //             // Your Are already tapped in.
-  //             console.log("already Tappped");
-  //           }
-  //         } else if (tapMeth.pass === "out" && newDoc.tapped) {
-  //           console.log("pasok");
-
-  //           let myStation = allStations.find(
-  //             (stat) =>
-  //               stat.name.toUpperCase() == tapMeth.currStation.toUpperCase()
-  //           );
-  //           // Get the shortest path & the distance
-  //           const grap = createGraph(allStations);
-  //           let originStation = allStations.find(
-  //             (item) => item.name.toUpperCase() === newDoc.origin.toUpperCase()
-  //           );
-  //           if (grap) {
-  //             let path = findLongestPath(
-  //               originStation.code,
-  //               String(myStation.code),
-  //               grap
-  //             );
-  //             let distansya = maxPathDistance(path.path, grap);
-  //             let Totaldist = Math.floor(distansya);
-  //             let totalPrice =
-  //               Math.floor(distansya) * constants.farePerKM === 0
-  //                 ? constants.minFare
-  //                 : Math.floor(distansya) * constants.farePerKM;
-  //             console.log("FINAL:", constants, totalPrice, Totaldist);
-  //             // Save data to the database
-  //             const pricey = Totaldist! < 2 ? constants.minFare : totalPrice;
-  //             const response = await fetch(`${endpoint}/beep/tapOut`, {
-  //               method: "PATCH",
-  //               headers: {
-  //                 "Content-Type": "application/json",
-  //               },
-  //               body: JSON.stringify({
-  //                 uid: newDoc.uid,
-  //                 desc: `${newDoc.origin.toUpperCase()} - ${tapMeth.currStation.toUpperCase()}`,
-  //                 balance: newDoc.balance,
-  //                 price: pricey,
-  //               }),
-  //             }).then(async (jason) => {
-  //               if (jason.status === 200) {
-  //                 const updated = await jason.json();
-  //                 console.log(updated, "updated...");
-  //                 await fetch("http://10.200.52.52:4000/mobile/tapIn", {
-  //                   method: "PATCH",
-  //                   headers: {
-  //                     "Content-Type": "application/json",
-  //                   },
-  //                   body: JSON.stringify(updated),
-  //                 }).then(async (jason) => {
-  //                   if (jason.status === 200) {
-  //                     return await jason.json();
-  //                   }
-  //                 });
-  //               }
-  //             });
-  //           }
-  //         } else {
-  //           console.log("Wala");
-  //         }
-  //       }
-  //     }
-  //   };
-  //   mobileTap();
-  // }, [mobileChange]);
 
   // Maintenance Listener
   useEffect(() => {
@@ -296,7 +173,25 @@ const DataArea: React.FC<Props> = ({
               "bg-white px-3 py-1 border-2 border-b-0 rounded-t-lg text-sm text-center cursor-pointer relative " +
               (tabAdmin === "QR" ? "border-[#202758]" : "opacity-80 ")
             }
-            onClick={() => setTabAdmin("QR")}
+            onClick={
+              maintenance
+                ? () => {
+                    toast.error(
+                      `The system is currently in Maintenance Mode.`,
+                      {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        pauseOnHover: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                      }
+                    );
+                  }
+                : () => setTabAdmin("QR")
+            }
             id="tabAdmin"
           >
             QR Tap

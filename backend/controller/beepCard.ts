@@ -147,7 +147,6 @@ export const TapInCard = async (
 ) => {
   const uid = req.body.uid;
   const orig = req.body.origin;
-  console.log(uid, orig);
 
   try {
     const card = await getCardByUID(uid);
@@ -218,7 +217,7 @@ export const TapOutMobile = async (
   const currStatObj = theStation.find(
     (item) => item.name!.toUpperCase() == currStation.toUpperCase()
   );
-  console.log(theStation);
+
   if (card && prices && theStation) {
     const grap = createGraph(theStation);
 
@@ -231,14 +230,19 @@ export const TapOutMobile = async (
         String(currStatObj!.code),
         grap
       );
-      console.log("Path:", path);
-      let distansya = Math.floor(maxPathDistance(path.path, grap));
-      console.log("Distance:", distansya);
-      let thePrice =
-        distansya * prices.farePerKM! === 0
-          ? prices.minFare!
-          : distansya * prices.farePerKM!;
 
+      let distansya = Math.floor(maxPathDistance(path.path, grap));
+      console.log("Distance:", distansya, card.balance);
+      let byKmPrice = prices.minFare! + distansya * prices.farePerKM!;
+      console.log("prices:", prices, byKmPrice);
+      const thePrice = distansya < 2 ? prices.minFare! : byKmPrice;
+
+      if (card.balance! < thePrice) {
+        // Error throw
+        return res.status(401).json({ msg: "Insufficient Balance." });
+      }
+
+      console.log("UMUSAD");
       try {
         await cardModel.updateOne(
           { uid: uid },
@@ -257,7 +261,12 @@ export const TapOutMobile = async (
           origin: "",
           balance: card.balance! - thePrice,
         });
-        res.status(200).json(updated);
+        res.status(200).json({
+          ...updated,
+          price: thePrice,
+          distance: distansya,
+          desc: descr,
+        });
       } catch (error) {
         res.status(400).json({ msg: error });
       }
