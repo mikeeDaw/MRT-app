@@ -261,6 +261,12 @@ export const TapOutMobile = async (
           origin: "",
           balance: card.balance! - thePrice,
         });
+        console.log({
+          ...updated,
+          price: thePrice,
+          distance: distansya,
+          desc: descr,
+        });
         res.status(200).json({
           ...updated,
           price: thePrice,
