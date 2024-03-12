@@ -79,7 +79,7 @@ const UserSide: React.FC<Props> = ({
               setTotalPrice(
                 Math.floor(distansya) * fare === 0
                   ? minFare
-                  : Math.floor(distansya) * fare
+                  : minFare + Math.floor(distansya) * fare
               );
 
               // Change Color of Polyline
@@ -281,6 +281,14 @@ const UserSide: React.FC<Props> = ({
     }
   };
 
+  const changeUidInput = (e: any) => {
+    const re = /^\d{1,15}$/;
+    const value = e.target.value;
+    if (value === "" || re.test(value)) {
+      setInputVal(value);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col border-2 border-[#202758] pt-2 pb-6 rounded-b-lg">
@@ -303,7 +311,7 @@ const UserSide: React.FC<Props> = ({
             className="rounded-none rounded-e-lg bg-gray-10 border text-gray-900 outline-0 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2 pe-10 focus:border-cyan-400 tracking-widest"
             placeholder="Your UID..."
             value={inputVal}
-            onChange={(e) => setInputVal(e.target.value)}
+            onChange={changeUidInput}
             autoComplete="off"
             onKeyUp={(e) => {
               if (e.key === "Enter") {

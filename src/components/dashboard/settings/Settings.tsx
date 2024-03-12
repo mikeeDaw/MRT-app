@@ -143,6 +143,22 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
     });
   };
 
+  const checkOper = () => {
+    if (maintenance) {
+      setEditing(true);
+    } else {
+      toast.error(`System still in Operational Mode.`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -222,7 +238,7 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
                 <button
                   className="absolute right-0 top-[-7px] me-3 border p-2 rounded-full border-[#b1b1b1]"
                   id="constEdit"
-                  onClick={() => setEditing(true)}
+                  onClick={checkOper}
                 >
                   <svg
                     viewBox="0 0 24 24"

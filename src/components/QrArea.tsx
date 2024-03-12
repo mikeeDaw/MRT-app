@@ -21,6 +21,7 @@ const QrArea = () => {
           <QRCode
             size={100}
             value={JSON.stringify({
+              mrtOnline: "s94jdIsBS032hu7",
               station: tapMeth.currStation,
               pass: tapMeth.pass,
             })}
@@ -29,12 +30,6 @@ const QrArea = () => {
           />
         </div>
       </div>
-
-      {/* <div className="flex flex-row gap-2">
-        <span className="font-bold">{tapMeth.currStation.toUpperCase()}</span>
-        <span>{"-"}</span>
-        <span>{`Tap ${tapMeth.pass}`}</span>
-      </div> */}
     </div>
   );
 };

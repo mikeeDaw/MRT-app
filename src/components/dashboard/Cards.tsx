@@ -89,7 +89,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
   const loadBeep = async () => {
     const updBody = { uid: selectedCard.uid, load: Number(load) };
 
-    const response = await fetch("http://localhost:4000/beep/load", {
+    const response = await fetch(`${endpoint}/beep/load`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
