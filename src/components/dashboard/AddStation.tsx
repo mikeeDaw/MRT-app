@@ -75,7 +75,15 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
       !latitude ||
       !longitude
     ) {
-      return console.log("Mali yung Input mo");
+      toast.error(`Invalid Input`, {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } else {
       const response = await fetch(`${endpoint}/station/add`, {
         method: "POST",

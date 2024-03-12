@@ -64,9 +64,10 @@ const Stations: React.FC<Props> = ({
         center={[14.59673, 121.07609]}
         zoom={12}
         scrollWheelZoom={false}
-        dragging={false}
-        zoomControl={false}
+        dragging={true}
+        zoomControl={true}
         doubleClickZoom={false}
+        maxZoom={15}
         styles={"w-full h-full"}
       >
         {allStations.map((station: any, idx) => {
