@@ -77,9 +77,9 @@ const UserSide: React.FC<Props> = ({
               console.log("Distance:", distansya);
               setDistance(Math.floor(distansya));
               setTotalPrice(
-                Math.floor(distansya) * fare === 0
+                Math.floor(distansya) < 2
                   ? minFare
-                  : minFare + Math.floor(distansya) * fare
+                  : minFare + (Math.floor(distansya) - 1) * fare
               );
 
               // Change Color of Polyline

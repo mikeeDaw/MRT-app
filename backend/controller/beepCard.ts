@@ -233,7 +233,7 @@ export const TapOutMobile = async (
 
       let distansya = Math.floor(maxPathDistance(path.path, grap));
       console.log("Distance:", distansya, card.balance);
-      let byKmPrice = prices.minFare! + distansya * prices.farePerKM!;
+      let byKmPrice = prices.minFare! + (distansya - 1) * prices.farePerKM!;
       console.log("prices:", prices, byKmPrice);
       const thePrice = distansya < 2 ? prices.minFare! : byKmPrice;
 
