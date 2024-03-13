@@ -29,12 +29,20 @@ export const generateCard = async (
   }
   const constDocu = await getConstById("Constant");
 
+  const currDate = new Date();
+
   const newCard = await createCard({
     uid: UID,
     balance: constDocu!.minLoad,
     tapped: false,
     origin: "",
-    transactions: [],
+    transactions: [
+      {
+        date: String(currDate),
+        desc: "Loaded Card",
+        amount: constDocu!.minLoad,
+      },
+    ],
   });
   res.status(200).json(newCard);
 };
