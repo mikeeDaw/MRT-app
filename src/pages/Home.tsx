@@ -71,9 +71,11 @@ const Home = () => {
           Leaflet.latLng(station.coordinates.x, station.coordinates.y),
         ];
         let conStat = allStations.find((item: any) => item.code == code);
-        connect.push(
-          Leaflet.latLng(conStat.coordinates.x, conStat.coordinates.y)
-        );
+        if (conStat) {
+          connect.push(
+            Leaflet.latLng(conStat.coordinates.x, conStat.coordinates.y)
+          );
+        }
         poly.push(connect);
       });
     });
