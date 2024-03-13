@@ -85,7 +85,7 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
         theme: "dark",
       });
     } else {
-      let maintenance = false;
+      let operational = false;
       try {
         const maint = await fetch(`${endpoint}/constants/get`, {
           method: "GET",
@@ -95,8 +95,8 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
         }).then(async (jason) => {
           if (jason.status === 200) {
             const data = await jason.json();
-            if (data.maintenance) {
-              toast.error(`System is in Maintenance.`, {
+            if (!data.maintenance) {
+              toast.error(`System is Operational.`, {
                 position: "top-left",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -105,7 +105,7 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
                 progress: undefined,
                 theme: "dark",
               });
-              maintenance = true;
+              operational = true;
             }
           }
         });
@@ -113,7 +113,7 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
         return console.log(error.message);
       }
 
-      if (maintenance) return;
+      if (operational) return;
 
       const response = await fetch(`${endpoint}/station/add`, {
         method: "POST",
