@@ -85,6 +85,36 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
         theme: "dark",
       });
     } else {
+      let maintenance = false;
+      try {
+        const maint = await fetch(`${endpoint}/constants/get`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then(async (jason) => {
+          if (jason.status === 200) {
+            const data = await jason.json();
+            if (data.maintenance) {
+              toast.error(`System is in Maintenance.`, {
+                position: "top-left",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+              maintenance = true;
+            }
+          }
+        });
+      } catch (error: any) {
+        return console.log(error.message);
+      }
+
+      if (maintenance) return;
+
       const response = await fetch(`${endpoint}/station/add`, {
         method: "POST",
         headers: {

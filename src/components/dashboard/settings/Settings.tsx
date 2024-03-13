@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SettingItem from "./SettingItem";
 import { Middleware } from "../../../middleware/Middleware";
 import { ToastContainer, toast } from "react-toastify";
+import { StationMod } from "../../types/models";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -14,6 +15,7 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
   const [constants, setConstants] = useState<any>(undefined);
   const [editing, setEditing] = useState(false);
   const [maintEdit, setMaintEdit] = useState(false);
+  const [stations, setStations] = useState<StationMod[]>([]);
 
   const [penalty, setPenalty] = useState(0);
   const [minFare, setMinFare] = useState(0);
@@ -22,9 +24,36 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
   const [cancel, setCancel] = useState(0);
   const [maintenance, setMaintenance] = useState(false);
 
-  useEffect(() => {
-    setHeader("Fare Management");
-  });
+  const checkFloatingStation = async () => {
+    let result = false;
+    await fetch(`${endpoint}/station/get/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: getToken(),
+      },
+    })
+      .then(async (jason) => {
+        if (jason.status === 200) {
+          const data: StationMod[] = await jason.json();
+          if (
+            data.every((station) => {
+              return station.connected.length !== 0;
+            })
+          )
+            result = false;
+          else result = true;
+        } else {
+          console.log("Error");
+          logout();
+        }
+      })
+      .catch((error) => {
+        return result;
+      });
+
+    return result;
+  };
 
   const getData = async () => {
     try {
@@ -106,6 +135,21 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
   };
 
   const handleMaintenance = async () => {
+    const hasFloating = await checkFloatingStation();
+
+    if (hasFloating) {
+      toast.error(`Connect Floating Stations First.`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return;
+    }
+
     const response = await fetch(`${endpoint}/constants/maintenance`, {
       method: "PATCH",
       headers: {
@@ -143,6 +187,10 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
     });
   };
 
+  useEffect(() => {
+    console.log(stations);
+  }, [stations]);
+
   const checkOper = () => {
     if (maintenance) {
       setEditing(true);
@@ -160,6 +208,7 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
   };
 
   useEffect(() => {
+    setHeader("Fare Management");
     getData();
   }, []);
 
