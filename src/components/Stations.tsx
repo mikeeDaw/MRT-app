@@ -122,7 +122,7 @@ const Stations: React.FC<Props> = ({
             </>
           );
         })}
-        {}
+
         <CenterMap lat={lat} lng={lng} zoom={zoom} />
         <Polygon
           key={232323}

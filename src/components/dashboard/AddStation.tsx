@@ -188,12 +188,14 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
           Leaflet.latLng(station.coordinates.x, station.coordinates.y),
         ];
         let conStat = stations.find((item: any) => item.code == code);
-        connect.push(
-          Leaflet.latLng(
-            Number(conStat!.coordinates.x),
-            Number(conStat!.coordinates.y)
-          )
-        );
+        if (conStat) {
+          connect.push(
+            Leaflet.latLng(
+              Number(conStat!.coordinates.x),
+              Number(conStat!.coordinates.y)
+            )
+          );
+        }
         poly.push(connect);
       });
 
