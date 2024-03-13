@@ -422,7 +422,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
                     <div className="absolute top-3 right-5 flex items-center gap-2 bg-slate-200 rounded-full ps-2 pe-3 py-1">
                       <span
                         className={
-                          "bg-black rounded-full w-[10px] h-[10px] " +
+                          "rounded-full w-[10px] h-[10px] " +
                           (selectedCard.tapped
                             ? "bg-[#44c32d]"
                             : "bg-[#d4eb13]")
