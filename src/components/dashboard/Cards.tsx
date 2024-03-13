@@ -387,6 +387,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
                           handleClick={() => {
                             cardClick(elem);
                           }}
+                          tapped={elem.tapped}
                         />
                       </motion.div>
                     </AnimatePresence>
@@ -418,12 +419,23 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
               >
                 <div className="flex flex-col w-full lg:h-fit pt-3">
                   <div className="flex w-full flex-col items-center mb-5">
+                    <div className="absolute top-3 right-5 flex items-center gap-2 bg-slate-200 rounded-full ps-2 pe-3 py-1">
+                      <span
+                        className={
+                          "bg-black rounded-full w-[10px] h-[10px] " +
+                          (selectedCard.tapped
+                            ? "bg-[#44c32d]"
+                            : "bg-[#d4eb13]")
+                        }
+                      />
+                      <span className="text-xs">
+                        {selectedCard.tapped ? "Onboarded" : "Offboarded"}
+                      </span>
+                    </div>
                     <span className="text-lg md:text-2xl">
-                      {" "}
-                      {selectedCard.uid}{" "}
+                      {selectedCard.uid}
                     </span>
                     <span className="text-slate-400 text-xs md:text-sm">
-                      {" "}
                       UUID
                     </span>
                   </div>

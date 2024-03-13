@@ -67,10 +67,12 @@ const StationCard: React.FC<Props> = ({
   const [confDel, setConfDel] = useState(false);
 
   const ifMaintenance = () => {
-    if (confDel) {
-      setConfDel(true);
+    if (mainte) {
+      if (!confDel) {
+        setConfDel(true);
+      }
     } else {
-      toast.error(`System still in Operational Mode.`, {
+      toast.error(`System is in Operational Mode.`, {
         position: "top-center",
         autoClose: 2500,
         hideProgressBar: false,
@@ -80,6 +82,19 @@ const StationCard: React.FC<Props> = ({
         theme: "dark",
       });
     }
+    // if (confDel) {
+    //   setConfDel(true);
+    // } else {
+    //   toast.error(`System still in Operational Mode.`, {
+    //     position: "top-center",
+    //     autoClose: 2500,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //     theme: "dark",
+    //   });
+    // }
   };
 
   return (

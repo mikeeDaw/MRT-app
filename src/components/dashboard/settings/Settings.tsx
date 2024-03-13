@@ -160,9 +160,15 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
     }).then(async (jason) => {
       if (jason.status === 200) {
         const data = await jason.json();
+        console.log(data, data.data.maintenance, "dataaaa");
         setMaintEdit(false);
         getData();
-        toast.success(`Maintenance Mode Updated.`, {
+
+        let message = "";
+        if (data.data.maintenance) message = "System is now in Maintenance.";
+        else message = "System is now Operational.";
+
+        toast.success(message, {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,

@@ -310,7 +310,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
     if (mainte) {
       setEditing(true);
     } else {
-      toast.error(`System still in Operational Mode.`, {
+      toast.error(`System is in Operational Mode.`, {
         position: "top-center",
         autoClose: 3000,
         hideProgressBar: false,
