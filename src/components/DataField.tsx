@@ -2,23 +2,24 @@ import { title } from 'process'
 import React from 'react'
 
 interface Props {
-    title : String,
-    data : String,
+    title : string,
+    data : string,
     icon : any
 }
 
-const DataField = ({...props} : Props) => {
+const DataField : React.FC<Props>= ({title, data, icon}) => {
+
   return (
-    <div className='bg-slate-100 flex gap-5 justify-start items-center p-2 rounded-lg'>
+    <div className='bg-slate-100 flex gap-3 justify-start items-center px-2 py-1.5 rounded-lg'>
         <div className='justify-start'>
-            <img src={props.icon} alt="Icon" className='w-8' />
+            <img src={icon} alt='Icon' className='w-8' />
         </div>
         <div className='flex flex-col'>
-            <span className='font-bold'>
-                {props.title}
+            <span className='font-bold text-sm'>
+                {title}
             </span>
             <span className='text-sm'>
-                {props.data}
+                {data}
             </span>
         </div>
 

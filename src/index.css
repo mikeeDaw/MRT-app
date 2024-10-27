@@ -2,30 +2,169 @@
 @tailwind components;
 @tailwind utilities;
 
+.bebas {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
 body {
   margin: 0;
-  font-family: "Helvetica Neue",'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    sans-serif, -apple-system, BlinkMacSystemFont;
+  font-family: "Helvetica Neue", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", sans-serif, -apple-system,
+    BlinkMacSystemFont;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-.marker-label{
-  position: relative;
+* {
+  font-family: "Montserrat", sans-serif;
 }
 
-.marker-label::after{
-  content: '';
+.marker-label {
   position: absolute;
   transform: rotate(37deg);
   width: 27px;
-  left: 76px;
-  bottom: -17px;
+  left: -125px;
+  top: -40px;
+  opacity: 1;
   @apply border-b-2 border-slate-500;
+  z-index: 50;
 }
+
+.marker-label::after {
+  content: "";
+  position: absolute;
+  transform: rotate(37deg);
+  width: 27px;
+  left: 86px;
+  bottom: -23px;
+  @apply border-b-2 border-[#0E137D];
+}
+
+.marker-label:hover {
+  z-index: 1000 !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+#cardData {
+  box-shadow: 0 0 13px -4px #959595;
+}
+#cardData::before {
+  content: "";
+  box-shadow: inherit;
+  background-repeat: no-repeat;
+  background-size: 80px 80px;
+  @apply absolute top-[-40px] left-[50%] translate-x-[-50%] rounded-full bg-white p-2 w-[90px] h-[90px];
+}
+#cardData::after {
+  content: "";
+  background-repeat: no-repeat;
+  background-size: 80px 80px;
+  z-index: 0;
+  @apply absolute top-0 left-[50%] translate-x-[-50%] bg-white p-2 w-[100px] h-[80px];
+}
+#idList::after {
+  content: "";
+  height: 70px;
+  width: 100%;
+  background-image: linear-gradient(360deg, #e2e8f0, transparent);
+  @apply absolute bottom-0 pointer-events-none;
+}
+
+.iconContainer:hover a img {
+  filter: invert(1) brightness(20);
+}
+
+#delBtn:hover {
+  background-color: #fff;
+  border: 2px solid #ff5959;
+}
+
+#delBtn:hover span {
+  color: #ff5959;
+  font-weight: 600;
+}
+
+#constEdit:hover {
+  transition: all 0.2s ease-in;
+  @apply bg-[#202758];
+}
+
+#constEdit:hover * {
+  transition: all 0.2s ease-in;
+  stroke: #00b38c;
+  fill: #00b38c;
+}
+
+#constConf:hover {
+  transition: all 0.2s ease-in;
+  @apply bg-white;
+}
+
+#constConf:hover * {
+  transition: all 0.2s ease-in;
+  stroke: #10c78c;
+}
+
+#constCanc:hover {
+  transition: all 0.2s ease-in;
+  @apply bg-white;
+}
+
+#constCanc:hover * {
+  transition: all 0.2s ease-in;
+  stroke: #e73030;
+  fill: #e73030;
+}
+
+#constConfDel:hover {
+  transition: all 0.2s ease-in;
+  @apply bg-white;
+}
+
+#constConfDel:hover * {
+  transition: all 0.2s ease-in;
+  stroke: #e73030;
+}
+.chargesInp {
+  border: 1px solid transparent;
+}
+
+.chargesInp:focus,
+.editInp:focus {
+  box-shadow: none;
+  border: none;
+}
+
+.chargesInp:focus {
+  border-bottom: 1px solid #00b38c;
+  color: #00b38c;
+}
+
+.stationCard:hover {
+  background-color: #3ee7c3;
+}
+
+.toastMsg {
+  left: 85px !important;
+  top: 75px !important;
+}
+
+/* .tabber::before{
+  content: '';
+  @apply absolute left-[-15px] top-1/2 bg-[#202758] p-2 rotate-45 border border-[#58ECC2] translate-y-[-50%] z-20
+} */

@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext, useState, createContext, useEffect } from "react";
+import "./index.css";
+import { Home, AdminDash } from "./pages";
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import PrivateRoute from "./components/route/PrivateRoute";
+import Error from "./pages/Error";
+import "./App.css";
+import { authCxt, TapMethod } from "./components/context/Context";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {/* <TapMethod.Provider value={{currStation: "", pass: ""}}> */}
+      <Router>
+        <Routes>
+          <Route element={<PrivateRoute />}>
+            <Route element={<AdminDash />} path="/admin" />
+          </Route>
+          {/* <Route element={<Home />} path="/" /> */}
+          <Route path="/:station/:pass" element={<Home />} />
+          <Route path="/error" element={<Error />} />
+        </Routes>
+      </Router>
+      {/* </TapMethod.Provider> */}
     </div>
   );
 }
