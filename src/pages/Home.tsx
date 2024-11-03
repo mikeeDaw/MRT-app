@@ -50,7 +50,7 @@ const Home = () => {
     ) {
       nav("/error");
     }
-  });
+  }, []);
 
   // For polyline
   useEffect(() => {

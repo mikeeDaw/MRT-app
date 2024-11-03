@@ -29,7 +29,7 @@
    - Change to Maintenance and Operational Mode
    - Change pricing and other system constants.
 
-2. ## 🎈 **Secure Admin Credentials**
+2. 🎈 **Secure Admin Credentials**
 
    - Usage of JWT to make the admin sessions and requests to server secure.
    - encrypting and salting of password on the database for added user security.
@@ -48,3 +48,4 @@
 ## <a name="notes"> Developer Notes </a>
 
 - Backend is moved to [this repo](https://github.com/mikeeDaw/mrt-backend)
+- Backend service is deployed on vercel (a little slow in fetching)

@@ -10,7 +10,7 @@ const CenterMap: React.FC<Props> = ({ lat, lng, zoom }) => {
   const map = useMap();
   useEffect(() => {
     map.setView([lat, lng], zoom);
-  });
+  }, []);
   return null;
 };
 
