@@ -61,7 +61,7 @@ const Stations: React.FC<Props> = ({
       <Map
         key={911}
         center={[14.59673, 121.07609]}
-        zoom={12}
+        zoom={18}
         scrollWheelZoom={false}
         dragging={true}
         zoomControl={true}
