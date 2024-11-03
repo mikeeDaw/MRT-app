@@ -1,46 +1,50 @@
-# Getting Started with Create React App
+# MRT Rail Transit and Ticketing Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📜 Table of Contents
 
-## Available Scripts
+1. 💿 [About This Project](#about)
+2. 💚 [Tech Stack](#techStack)
+3. 💡 [Features](#features)
+4. 📐 [Dev Notes](#notes)
 
-In the project directory, you can run:
+## <a name="about"> About the Project </a>
 
-### `npm start`
+"MRTOnline" is a full stack web application created to simulate the work operations of MRT Line 3. Allow commuters to view stations, tap in/out with their beep card number or thru a QR scanner via the [Mobile App](https://github.com/mikeeDaw/mrtMobile), and allow admin operations to manage the system.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## <a name="techStack"> Tech Stack </a>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- MongoDB
+- Express
+- React.js
+- Node.js
+- Tailwind CSS
 
-### `npm test`
+## <a name="features"> Features </a>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. 🎈 **Easy Admin Controls**: Easily manage the operations of the whole system using the dashboard.
 
-### `npm run build`
+   - Add and Manage Stations
+   - Create and Manage Beep Cards
+   - Load Beep cards
+   - Change to Maintenance and Operational Mode
+   - Change pricing and other system constants.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. ## 🎈 **Secure Admin Credentials**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   - Usage of JWT to make the admin sessions and requests to server secure.
+   - encrypting and salting of password on the database for added user security.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. 🎈 **Ease Commuting Experience**
 
-### `npm run eject`
+   - Tap In/Out Easily by scanning the QR code through the mobile App or entering the card number.
+   - View The stations and route of the transit line.
+   - View fare, distance, and other information about your journey.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+4. 🎈 **Great User Experience**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   - Responsive layout for different screen sizes
+   - Visually appealing design and clear display of data
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## <a name="notes"> Developer Notes </a>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Backend is moved to [this repo](https://github.com/mikeeDaw/mrt-backend)
