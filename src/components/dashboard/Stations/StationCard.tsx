@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import { Thrash2 } from "../../../icons";
 import { motion } from "framer-motion";
-import { StationMod } from "../../types/models";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { Thrash2 } from "../../../icons";
 import { Middleware } from "../../../middleware/Middleware";
-import { ToastContainer, toast } from "react-toastify";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -32,7 +31,7 @@ const StationCard: React.FC<Props> = ({
   const { getToken, logout } = Middleware();
 
   const handleDelete = async (code: string) => {
-    const response = await fetch(`${endpoint}/station/deleteMe`, {
+    await fetch(`${endpoint}/station/deleteMe`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

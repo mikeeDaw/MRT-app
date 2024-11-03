@@ -69,7 +69,7 @@ export const updateStation = async (
     });
 
     // add connection to the target stations
-    if (connAdd.length != 0) {
+    if (connAdd.length !== 0) {
       connAdd.forEach(async (codeAdd: string) => {
         await StationModel.updateOne(
           { code: codeAdd },
@@ -83,7 +83,7 @@ export const updateStation = async (
     }
 
     // remove connection to target stations
-    if (connRem.length != 0) {
+    if (connRem.length !== 0) {
       connRem.forEach(async (codeRem: string) => {
         await StationModel.updateOne(
           { code: codeRem },

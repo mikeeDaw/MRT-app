@@ -1,11 +1,9 @@
-import React, { useContext, useState, createContext, useEffect } from "react";
-import "./index.css";
-import { Home, AdminDash } from "./pages";
-import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
-import PrivateRoute from "./components/route/PrivateRoute";
-import Error from "./pages/Error";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
-import { authCxt, TapMethod } from "./components/context/Context";
+import PrivateRoute from "./components/route/PrivateRoute";
+import "./index.css";
+import { AdminDash, Home } from "./pages";
+import Error from "./pages/Error";
 
 function App() {
   return (

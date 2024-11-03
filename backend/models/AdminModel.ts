@@ -13,7 +13,7 @@ const adminSchema = new Schema({
 
 }, { timestamps: true})
 
-const adminModel = mongoose.model('Admin', adminSchema);
+const adminModel = mongoose.model('Admin', adminSchema,"Admin");
 
 const getUsers = () => adminModel.find();
 const getUserByEmail = (email: String) => adminModel.findOne({email});

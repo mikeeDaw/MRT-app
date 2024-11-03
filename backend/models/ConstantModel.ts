@@ -14,7 +14,11 @@ const constantSchema = new Schema(
   { timestamps: true }
 );
 
-export const constModel = mongoose.model("Constant", constantSchema);
+export const constModel = mongoose.model(
+  "Constant",
+  constantSchema,
+  "Constant"
+);
 
 export const getConstants = () => constModel.find();
 export const getConstById = (id: String) => constModel.findOne({ id });

@@ -1,16 +1,11 @@
-import * as Realm from "realm-web";
+import Leaflet from "leaflet";
 import React, { useContext, useEffect, useState } from "react";
-import UserSide from "./UserSide";
+import { toast } from "react-toastify";
+import * as Realm from "realm-web";
 import AdminLog from "./AdminLog";
 import { TapMethod } from "./context/Context";
-import Leaflet, { LatLngExpression, latLng } from "leaflet";
 import QrArea from "./QrArea";
-import {
-  createGraph,
-  findLongestPath,
-  maxPathDistance,
-} from "../constants/pathing";
-import { toast } from "react-toastify";
+import UserSide from "./UserSide";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {

@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { RArrow, Beep, Thrash } from "../../icons";
-import { InputField } from "../";
-import Beepcard from "./Beepcard";
-import { Middleware } from "../../middleware/Middleware";
 import { AnimatePresence, motion } from "framer-motion";
-import { cardList, cardData } from "../../constants/animate";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { InputField } from "../";
+import { Beep, Thrash } from "../../icons";
+import { Middleware } from "../../middleware/Middleware";
+import Beepcard from "./Beepcard";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -26,7 +25,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
   // const dragged = useRef();
   // Generate New Beep Card
   const generateHandler = async () => {
-    const response = await fetch(`${endpoint}/beep/generate`, {
+    await fetch(`${endpoint}/beep/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -64,7 +63,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
   // Get All beep cards
   const getAll = async () => {
     console.log(endpoint);
-    const response = await fetch(`${endpoint}/beep/fetchAll`, {
+    await fetch(`${endpoint}/beep/fetchAll`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -89,7 +88,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
   const loadBeep = async () => {
     const updBody = { uid: selectedCard.uid, load: Number(load) };
 
-    const response = await fetch(`${endpoint}/beep/load`, {
+    await fetch(`${endpoint}/beep/load`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -140,7 +139,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
   // Delete a card
   const deleteCard = async (uid: string) => {
     const delBody = { uid: uid };
-    const response = await fetch(`${endpoint}/beep/deleteCard`, {
+    await fetch(`${endpoint}/beep/deleteCard`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -153,7 +152,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
           const data = await jason.json();
           console.log("Deleted:", data);
           setTrackChanges(trackChanges - 1);
-          setCards(cards.filter((item) => item.uid != uid));
+          setCards(cards.filter((item) => item.uid !== uid));
           setSelect(false);
           setSelectedCard({});
 
@@ -179,7 +178,7 @@ const Cards: React.FC<Props> = ({ setHeader }) => {
   // Get Minimum Load
   const getMinLoad = async () => {
     try {
-      const response = await fetch(`${endpoint}/constants/get`, {
+      await fetch(`${endpoint}/constants/get`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

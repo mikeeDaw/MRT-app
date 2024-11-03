@@ -13,7 +13,7 @@ const cardSchema = new Schema(
   { timestamps: true }
 );
 
-export const cardModel = mongoose.model("Beep", cardSchema);
+export const cardModel = mongoose.model("Beep", cardSchema, "Beep");
 
 export const getCards = () => cardModel.find().sort({ updatedAt: "desc" });
 export const getCardByUID = (uid: String) => cardModel.findOne({ uid });

@@ -1,19 +1,10 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  createContext,
-  ReactElement,
-} from "react";
-import { Stations, DataArea } from "../components";
-// import authCxt from '../components/context/AuthContext';
-import Leaflet, { LatLngExpression, latLng } from "leaflet";
-import { Middleware } from "../middleware/Middleware";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { DataArea, Stations } from "../components";
+import Leaflet, { LatLngExpression } from "leaflet";
+import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { TapMethod } from "../components/context/Context";
 import { StationMod } from "../components/types/models";
-import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
 const endpoint = process.env.REACT_APP_URL;
 
 const Home = () => {
@@ -25,7 +16,7 @@ const Home = () => {
   const pars = useParams();
 
   const getTheStations = async () => {
-    const response = await fetch(`${endpoint}/station/get/all`, {
+    await fetch(`${endpoint}/station/get/all`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -35,10 +26,9 @@ const Home = () => {
         if (jason.status === 200) {
           const data = await jason.json();
           setAllStations(data);
-
           if (
             !data.find(
-              (stat: StationMod) => stat.name == pars.station?.toUpperCase()
+              (stat: StationMod) => stat.name === pars.station?.toUpperCase()
             )
           ) {
             nav("/error");
@@ -60,7 +50,7 @@ const Home = () => {
     ) {
       nav("/error");
     }
-  }, []);
+  });
 
   // For polyline
   useEffect(() => {
@@ -70,7 +60,7 @@ const Home = () => {
         let connect: any[] = [
           Leaflet.latLng(station.coordinates.x, station.coordinates.y),
         ];
-        let conStat = allStations.find((item: any) => item.code == code);
+        let conStat = allStations.find((item: any) => item.code === code);
         if (conStat) {
           connect.push(
             Leaflet.latLng(conStat.coordinates.x, conStat.coordinates.y)

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import QRCode from "react-qr-code";
 import { TapMethod } from "./context/Context";
 

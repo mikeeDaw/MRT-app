@@ -1,16 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Map, MapEvents, InputField } from "..";
-import { Marker, Popup, Polygon, useMapEvents } from "react-leaflet";
-import Leaflet, { LatLngExpression } from "leaflet";
-import { Label, Select } from "flowbite-react";
-import { Middleware } from "../../middleware/Middleware";
 import { motion } from "framer-motion";
-import { introPage } from "../../constants/animate";
-import { StationMod } from "../types/models";
-import { connected } from "process";
+import Leaflet, { LatLngExpression } from "leaflet";
+import React, { useContext, useEffect, useState } from "react";
+import { Marker, Polygon, Popup } from "react-leaflet";
 import { ToastContainer, toast } from "react-toastify";
-import { TapMethod } from "../context/Context";
 import "react-toastify/dist/ReactToastify.css";
+import { InputField, Map, MapEvents } from "..";
+import { introPage } from "../../constants/animate";
+import { Middleware } from "../../middleware/Middleware";
+import { TapMethod } from "../context/Context";
+import { StationMod } from "../types/models";
 
 const endpoint = process.env.REACT_APP_URL;
 
@@ -246,8 +244,8 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
 
     if (!(distance < 500)) {
       if (chosenStat.find((item) => item == code)) {
-        setChosenStat(chosenStat.filter((item) => item != code));
-        setinitNewPoly(initNewPoly.filter((item) => item.id != sid));
+        setChosenStat(chosenStat.filter((item) => item !== code));
+        setinitNewPoly(initNewPoly.filter((item) => item.id !== sid));
       } else {
         setChosenStat([...chosenStat, code]);
         setinitNewPoly([
@@ -432,12 +430,15 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
           <span> Add New Station </span>
           <div className="max-h-[270px] overflow-y-scroll scrollbar-hide">
             <div className="flex gap-3 mt-4 h-[44px]">
+              {
+                // NOTE: X and Y labels are interchanged kasi baliktad yung labels.
+              }
               <InputField
                 forImg={false}
                 textIcon="X"
                 placeholder="12.54704"
-                inpValue={String(longitude)}
-                setter={xChange}
+                inpValue={String(latitude)}
+                setter={yChange}
                 onlyRead={true}
               />
 
@@ -445,8 +446,8 @@ const AddStation: React.FC<Props> = ({ setHeader }) => {
                 forImg={false}
                 textIcon="Y"
                 placeholder="14.5643"
-                inpValue={String(latitude)}
-                setter={yChange}
+                inpValue={String(longitude)}
+                setter={xChange}
                 onlyRead={true}
               />
             </div>

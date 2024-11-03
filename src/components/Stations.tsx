@@ -1,11 +1,10 @@
-import Leaflet, { LatLngExpression, latLng } from "leaflet";
-import React, { ReactElement, useContext, useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Polygon } from "react-leaflet";
-import { TapMethod } from "./context/Context";
-import { Red } from "../icons";
-import Map from "./Map";
-import CenterMap from "./CenterMap";
+import Leaflet, { LatLngExpression } from "leaflet";
+import React, { useContext, useEffect, useState } from "react";
+import { Marker, Polygon } from "react-leaflet";
 import { useNavigate } from "react-router-dom";
+import CenterMap from "./CenterMap";
+import { TapMethod } from "./context/Context";
+import Map from "./Map";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -75,7 +74,7 @@ const Stations: React.FC<Props> = ({
 
           return (
             <>
-              {station.name == currStation.toUpperCase() ? (
+              {station.name === currStation.toUpperCase() ? (
                 <>
                   <Marker
                     key={idx + 460}
@@ -94,7 +93,7 @@ const Stations: React.FC<Props> = ({
               ) : (
                 <>
                   <Marker
-                    key={markKey}
+                    key={Math.floor(Math.random() * 999)}
                     position={[coords.x, coords.y]}
                     icon={Leaflet.divIcon({
                       className: "bg-none",
@@ -110,7 +109,7 @@ const Stations: React.FC<Props> = ({
               )}
 
               <Marker
-                key={Number("86" + String(markKey))}
+                key={Math.floor(Math.random() * 999)}
                 position={[coords.x, coords.y]}
                 icon={Leaflet.divIcon({
                   className: "marker-label",

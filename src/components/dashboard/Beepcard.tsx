@@ -12,7 +12,7 @@ const Beepcard: React.FC<Props> = ({ uid, selected, handleClick, tapped }) => {
       <button
         key={Number(uid)}
         className={
-          "border-[#a9a9a9] border break-all items-center py-2 px-4 flex rounded-xl w-10/12 relative flex gap-3 " +
+          "border-[#a9a9a9] border break-all items-center py-2 px-4 rounded-xl w-10/12 relative flex gap-3 " +
           (selected ? "bg-[#58ECC2]" : "bg-white ")
         }
         onClick={handleClick}

@@ -1,21 +1,12 @@
+import { AnimatePresence, motion } from "framer-motion";
+import Leaflet, { LatLngExpression } from "leaflet";
 import React, { useEffect, useRef, useState } from "react";
+import { MapContainer, Marker, Polygon, TileLayer } from "react-leaflet";
+import { ToastContainer, toast } from "react-toastify";
 import { Middleware } from "../../../middleware/Middleware";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Polygon,
-  useMap,
-} from "react-leaflet";
-import Leaflet, { LatLngExpression, latLng } from "leaflet";
-import { Red } from "../../../icons";
-import StationCard from "./StationCard";
-import { AnimatePresence, animate, motion } from "framer-motion";
-import { simpleFade } from "../../../constants/animate";
 import { StationMod } from "../../types/models";
 import MapFly from "./MapFly";
-import { ToastContainer, toast } from "react-toastify";
+import StationCard from "./StationCard";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -49,7 +40,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
   const [connects, setConnects] = useState<String[]>([]);
 
   const getAllStations = async () => {
-    const response = await fetch(`${endpoint}/station/get/all`, {
+    await fetch(`${endpoint}/station/get/all`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +68,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
     let errorFlag = false;
 
     stayed!.forEach((code) => {
-      let targetStation = stationCard.find((statObj) => statObj.code == code);
+      let targetStation = stationCard.find((statObj) => statObj.code === code);
       let distance = Leaflet.latLng(Number(xCoord), Number(yCoord)).distanceTo(
         Leaflet.latLng(
           Number(targetStation?.coordinates.x),
@@ -101,7 +92,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
     });
 
     added!.forEach((code) => {
-      let targetStation = stationCard.find((statObj) => statObj.code == code);
+      let targetStation = stationCard.find((statObj) => statObj.code === code);
       let distance = Leaflet.latLng(Number(xCoord), Number(yCoord)).distanceTo(
         Leaflet.latLng(
           Number(targetStation?.coordinates.x),
@@ -129,11 +120,11 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
     }
 
     if (
-      name == "" ||
+      name === "" ||
       isNaN(xCoord) ||
       isNaN(yCoord) ||
-      yCoord == 0 ||
-      xCoord == 0
+      yCoord === 0 ||
+      xCoord === 0
     ) {
       toast.error(`Invalid Input`, {
         position: "top-left",
@@ -148,7 +139,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
       setYCoord(Number(selectedSt?.coordinates.y));
       setName(String(selectedSt?.name));
     } else {
-      const response = await fetch(`${endpoint}/station/updateStat`, {
+      await fetch(`${endpoint}/station/updateStat`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -193,7 +184,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
 
   const getConstants = async () => {
     try {
-      const response = await fetch(`${endpoint}/constants/get`, {
+      await fetch(`${endpoint}/constants/get`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -227,7 +218,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
           station.coordinates.y
         );
         let connect: any[] = [stationPoint];
-        let conStat = stationCard.find((item: any) => item.code == code);
+        let conStat = stationCard.find((item: any) => item.code === code);
         if (conStat) {
           connect.push(
             Leaflet.latLng(conStat.coordinates.x, conStat.coordinates.y)
@@ -593,11 +584,11 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
               <div className="flex flex-col pb-3 h-full gap-1 overflow-y-scroll scrollbar-hide">
                 {selectedSt ? (
                   sortedConn.map((code) => {
-                    if (selectedSt.code == code.code) {
+                    if (selectedSt.code === code.code) {
                       return <></>;
                     }
 
-                    const flag = connects.find((item) => item == code.code);
+                    const flag = connects.find((item) => item === code.code);
                     return (
                       <>
                         <motion.button
@@ -617,7 +608,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
                                   if (flag) {
                                     setConnects(
                                       connects.filter(
-                                        (itemCode) => itemCode != code.code
+                                        (itemCode) => itemCode !== code.code
                                       )
                                     );
                                   } else {
@@ -674,7 +665,7 @@ const Stations: React.FC<Props> = ({ setHeader }) => {
                       name={titleCase(card.name) + " Station"}
                       delay={delay}
                       selected={
-                        selectedSt ? selectedSt.code == card.code : false
+                        selectedSt ? selectedSt.code === card.code : false
                       }
                       setSelect={() => {
                         statClick(card);

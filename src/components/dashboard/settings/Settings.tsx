@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import SettingItem from "./SettingItem";
-import { Middleware } from "../../../middleware/Middleware";
 import { ToastContainer, toast } from "react-toastify";
+import { Middleware } from "../../../middleware/Middleware";
 import { StationMod } from "../../types/models";
+import SettingItem from "./SettingItem";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -15,7 +15,6 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
   const [constants, setConstants] = useState<any>(undefined);
   const [editing, setEditing] = useState(false);
   const [maintEdit, setMaintEdit] = useState(false);
-  const [stations, setStations] = useState<StationMod[]>([]);
 
   const [penalty, setPenalty] = useState(0);
   const [minFare, setMinFare] = useState(0);
@@ -57,7 +56,7 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
 
   const getData = async () => {
     try {
-      const response = await fetch(`${endpoint}/constants/get`, {
+      await fetch(`${endpoint}/constants/get`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +88,7 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
       minLoad: minLoad,
     };
 
-    if (penalty == 0 || minFare == 0 || perKM == 0 || minLoad == 0) {
+    if (penalty === 0 || minFare === 0 || perKM === 0 || minLoad === 0) {
       toast.error(`Invalid Input.`, {
         position: "top-center",
         autoClose: 3000,
@@ -109,7 +108,6 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
         body: JSON.stringify(updBody),
       }).then(async (jason) => {
         if (jason.status === 200) {
-          const data = await jason.json();
           setEditing(false);
 
           toast.success(`Update was Successful!`, {
@@ -150,7 +148,7 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
       return;
     }
 
-    const response = await fetch(`${endpoint}/constants/maintenance`, {
+    await fetch(`${endpoint}/constants/maintenance`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -192,10 +190,6 @@ const Settings: React.FC<Props> = ({ setHeader }) => {
       }
     });
   };
-
-  useEffect(() => {
-    console.log(stations);
-  }, [stations]);
 
   const checkOper = () => {
     if (maintenance) {

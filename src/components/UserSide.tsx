@@ -1,15 +1,14 @@
-import Leaflet, { LatLngExpression, latLng } from "leaflet";
-import React, { useContext, useEffect, useState } from "react";
-import DataField from "./DataField";
-import { Wallet, Pay, Beep } from "../icons";
-import { ToastContainer, toast } from "react-toastify";
-import { CardMod, StationMod } from "./types/models";
-import { TapMethod } from "./context/Context";
+import Leaflet from "leaflet";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   createGraph,
   findLongestPath,
   maxPathDistance,
 } from "../constants/pathing";
+import { Location, Pay, Wallet } from "../icons";
+import DataField from "./DataField";
+import { CardMod, StationMod } from "./types/models";
 const endpoint = process.env.REACT_APP_URL;
 
 interface Props {
@@ -60,7 +59,7 @@ const UserSide: React.FC<Props> = ({
         setCardData(data);
         console.log(data);
         if (tap === "out") {
-          if (data.origin != "") {
+          if (data.origin !== "") {
             const grap = createGraph(theStation);
             let originStation = theStation.find(
               (item) => item.name.toUpperCase() === data.origin.toUpperCase()
@@ -135,6 +134,7 @@ const UserSide: React.FC<Props> = ({
       }).then(async (jason) => {
         if (jason.status === 200) {
           const data = await jason.json();
+          console.log(data, "fareee");
           setFare(data.farePerKM);
           setMinFare(data.minFare);
           setMaintenance(data.maintenance);
@@ -383,7 +383,7 @@ const UserSide: React.FC<Props> = ({
                     : "---"
                   : "---"
               }
-              icon={Wallet}
+              icon={Location}
             />
           </div>
           <div className="w-1/2 flex flex-col gap-2">
@@ -405,7 +405,7 @@ const UserSide: React.FC<Props> = ({
             <DataField
               title={"To"}
               data={tap !== "in" ? titleCase(currStat) : "---"}
-              icon={Wallet}
+              icon={Location}
             />
           </div>
         </div>

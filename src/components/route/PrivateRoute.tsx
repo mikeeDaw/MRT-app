@@ -1,13 +1,10 @@
-import React, { useContext } from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
-import {isLogged} from '../../middleware/Middleware';
+import { Navigate, Outlet } from "react-router-dom";
+import { isLogged } from "../../middleware/Middleware";
 
 const PrivateRoute = () => {
   // const {auth} = useContext(authCxt);
-  const auth = isLogged()
-  return (
-     auth ? <Outlet /> : <Navigate to='/ayala/in'/> 
-  )
-}
+  const auth = isLogged();
+  return auth ? <Outlet /> : <Navigate to="/ayala/in" />;
+};
 
-export default PrivateRoute
+export default PrivateRoute;
